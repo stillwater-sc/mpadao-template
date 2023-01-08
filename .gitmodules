@@ -1,0 +1,9 @@
+[submodule "ext/google/googletest"]
+	path = ext/google/googletest
+	url = https://github.com/google/googletest.git
+[submodule "ext/stillwater-sc/universal"]
+	path = ext/stillwater-sc/universal
+	url = https://github.com/stillwater-sc/universal
+[submodule "ext/stillwater-sc/mtl4"]
+	path = ext/stillwater-sc/mtl4
+	url = https://github.com/stillwater-sc/mtl4
