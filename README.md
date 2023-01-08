@@ -1,6 +1,8 @@
 # Mixed Precision Algorithm Development and Optimization
 
-This repo contains the 
+This repo contains a starting template for developing and optimizing mixed-precision algorithms for IoT, ML/DL/RL, SDR, and DSP applications that can be deployed on custom hardware accelerators while at the same time having an efficient collaboration with the host CPU.
+
+Once you use this template, you will need to adjust the status badges below to point to your repo.
 
 | **System** | **Status** | **More information** |
 |------------|------------|----------------------|
@@ -31,17 +33,18 @@ When using VSCode, the repository contains a devcontainer spec in the directory 
 
 ![VS code environment](img/vscode-devcontainer.png)
 
-The default container provides a build environment based on GCC11:
+The default container provides a build environment based on Clang14:
 
 ```json
 {
-	"image": "stillwater/universal:gcc11builder"
+	"image": "stillwater/universal:clang14builder"
 }
 ```
 There is a set of builders that can be used that contain specific compilers. Other environments are:
 ```text
 gcc9builder
 gcc10builder
+gcc11builder
 gcc12builder
 clang11builder
 clang12builder
