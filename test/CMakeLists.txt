@@ -1,17 +1,17 @@
 cmake_minimum_required(VERSION 3.22)
-set(app_name mpir_tests)
+set(app_name mpadao_tests)
 project(${app_name} C CXX)
 
-add_subdirectory(${MPIR_ROOT_DIR}/ext/googletest gtbuild) 
+add_subdirectory(${MPIR_ROOT_DIR}/ext/google/googletest build_gtest) 
 
 include_directories(${VERSION_INCLUDE_HEADERS_DIR})
-include_directories(${PROJECT_SOURCE_DIR}/ext/googletest/googletest/include)
+include_directories(${PROJECT_SOURCE_DIR}/ext/google/googletest/include)
 
 set(SOURCE_FILES main.cpp src/mpir_tests.cpp)
 
 add_executable(${app_name} ${SOURCE_FILES})
-set(folder "Mixed-Precision/Tests")
+set(folder "Google Tests")
 set_target_properties(${app_name} PROPERTIES FOLDER ${folder})
 
-target_link_libraries(mpir_tests gtest)
-install(TARGETS mpir_tests DESTINATION bin)
+target_link_libraries(${app_name} gtest)
+install(TARGETS ${app_name} DESTINATION bin)

@@ -9,11 +9,11 @@ endif()
 if(NOT DEFINED MPIR_PATCH)
 	set(MPIR_PATCH 1)
 endif()
-project(mixed-precision-ir
-	DESCRIPTION "High-Performance Mixed-Precision Iterative Refinement algorithm development environment"
+project(mpadao-template
+	DESCRIPTION "High-Performance Mixed-Precision Algorithm Development and Optimization Environment"
 	VERSION "${MPIR_MAJOR}.${MPIR_MINOR}.${MPIR_PATCH}"
 	LANGUAGES C CXX
-	HOMEPAGE_URL "https://github.com/jamesquinlan/mixed-precision-ir")
+	HOMEPAGE_URL "https://github.com/stillwater-sc/mpadao-template")
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -63,7 +63,7 @@ include_directories(${MTL4_INCLUDE_HEADERS_DIR})
 include_directories(${VERSION_INCLUDE_HEADERS_DIR})
 
 enable_testing()
-include(CTest)
+#include(CTest)
 
 # Universal is a C++ header-only library, so we do not need to build anything
 # if you do add this line, you will get all the Universal regression tests,
