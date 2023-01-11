@@ -45,7 +45,8 @@ jobs:
           boost_version: 1.79.0
           platform_version: ${{matrix.version}}
           toolset: ${{matrix.toolset}}
-          cache: ${{runner.os == 'Windows'}}
+          #cache: ${{runner.os == 'Windows'}}   this does not appear to work
+          cache: ${{matrix.os == 'windows-latest'}}  # now you will need to track the Windows matrix tags explicitly
 
       - name: Pull and update submodules
         run: |
