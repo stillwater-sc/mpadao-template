@@ -1,17 +1,17 @@
 cmake_minimum_required(VERSION 3.22)
 
-if(NOT DEFINED MPIR_MAJOR)
-	set(MPIR_MAJOR 0)
+if(NOT DEFINED MPADAO_MAJOR)
+	set(MPADAO_MAJOR 0)
 endif()
-if(NOT DEFINED MPIR_MINOR)
-	set(MPIR_MINOR 8)
+if(NOT DEFINED MPADAO_MINOR)
+	set(MPADAO_MINOR 8)
 endif()
-if(NOT DEFINED MPIR_PATCH)
-	set(MPIR_PATCH 1)
+if(NOT DEFINED MPADAO_PATCH)
+	set(MPADAO_PATCH 1)
 endif()
 project(mpadao-template
 	DESCRIPTION "High-Performance Mixed-Precision Algorithm Development and Optimization Environment"
-	VERSION "${MPIR_MAJOR}.${MPIR_MINOR}.${MPIR_PATCH}"
+	VERSION "${MPADAO_MAJOR}.${MPADAO_MINOR}.${MPADAO_PATCH}"
 	LANGUAGES C CXX
 	HOMEPAGE_URL "https://github.com/stillwater-sc/mpadao-template")
 
@@ -47,19 +47,19 @@ if(Boost_FOUND)
 	include_directories(${Boost_INCLUDE_DIR})
 endif(Boost_FOUND)
 
-set(MPIR_ROOT_DIR ${PROJECT_SOURCE_DIR})
-set(MPIR_INSTALL_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
-set(MPIR_INSTALL_BIN_DIR ${PROJECT_SOURCE_DIR}/bin)
-set(MPIR_INSTALL_LIB_DIR ${PROJECT_SOURCE_DIR}/lib)
+set(MPADAO_ROOT_DIR ${PROJECT_SOURCE_DIR})
+set(MPADAO_INSTALL_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
+set(MPADAO_INSTALL_BIN_DIR ${PROJECT_SOURCE_DIR}/bin)
+set(MPADAO_INSTALL_LIB_DIR ${PROJECT_SOURCE_DIR}/lib)
 
 # constituent library headers
-set(MTL4_INCLUDE_HEADERS_DIR ${PROJECT_SOURCE_DIR}/src/mtl4)
-set(VERSION_INCLUDE_HEADERS_DIR ${PROJECT_SOURCE_DIR}/src/version)
+set(MTL4EXT_INCLUDE_HEADERS_DIR ${PROJECT_SOURCE_DIR}/src/mtl4ext)
+set(VERSION_INCLUDE_HEADERS_DIR ${PROJECT_SOURCE_DIR}/src/lib/version)
 
 add_definitions(-D UNIVERSAL_ENABLE_TEST=OFF)
 
-include_directories(${MPIR_INSTALL_INCLUDE_DIR})
-include_directories(${MTL4_INCLUDE_HEADERS_DIR})
+include_directories(${MPADAO_INSTALL_INCLUDE_DIR})
+include_directories(${MTL4EXT_INCLUDE_HEADERS_DIR})
 include_directories(${VERSION_INCLUDE_HEADERS_DIR})
 
 enable_testing()
@@ -71,10 +71,10 @@ enable_testing()
 # You can only add this build subdirectory to ONE and only ONE project
 # within the IR workspace. Multiple includes will yield multiple definitions
 # of build, install, and uninstall targets.
-add_subdirectory(${MPIR_ROOT_DIR}/ext/stillwater-sc/universal build_universal) 
+add_subdirectory(${MPADAO_ROOT_DIR}/ext/stillwater-sc/universal build_universal) 
 
 # MTL4 is a C++ header-only library, so we do not need to build anything
-add_subdirectory(${MPIR_ROOT_DIR}/ext/stillwater-sc/mtl4 build_mtl4) 
+add_subdirectory(${MPADAO_ROOT_DIR}/ext/stillwater-sc/mtl4 build_mtl4) 
 
 add_subdirectory(src)
 add_subdirectory(test)

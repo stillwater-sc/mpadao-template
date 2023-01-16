@@ -11,5 +11,5 @@ add_library(${lib_name} STATIC ${SOURCE_FILES})
 set(folder "Libraries")
 set_target_properties(${lib_name} PROPERTIES FOLDER ${folder})
 
-install(TARGETS ${lib_name} DESTINATION ${MPIR_INSTALL_LIB_DIR})
-install(FILES version.hpp DESTINATION ${MPIR_INSTALL_INCLUDE_DIR})
+install(TARGETS ${lib_name} DESTINATION ${MPADAO_INSTALL_LIB_DIR})
+install(FILES version.hpp DESTINATION ${MPADAO_INSTALL_INCLUDE_DIR})
