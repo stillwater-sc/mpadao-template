@@ -4,6 +4,8 @@ project(${app_name} CXX)
 
 # Universal is a C++ header-only library, so we do not need to build anything
 include_directories(${MPADAO_ROOT_DIR}/ext/stillwater-sc/universal/include)
+# MTL4 is a C++ header-only library, so we do not need to build anything
+include_directories(${MPADAO_ROOT_DIR}/ext/stillwater-sc/mtl4)
 
 # source files that make up the command
 set(SOURCE_FILES
