@@ -76,5 +76,6 @@ add_subdirectory(${MPADAO_ROOT_DIR}/ext/stillwater-sc/universal build_universal)
 # MTL4 is a C++ header-only library, so we do not need to build anything
 add_subdirectory(${MPADAO_ROOT_DIR}/ext/stillwater-sc/mtl4 build_mtl4) 
 
-add_subdirectory(src)
 add_subdirectory(test)
+add_subdirectory(src)
+add_subdirectory(benchmark)
