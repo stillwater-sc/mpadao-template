@@ -1,0 +1,3 @@
+# add a command that when you run the container without a command, it produces something meaningful
+ENV CONTAINER_ID "Mixed-Precision Algorithm Development with Universal and MTL4 using Clang 11"
+CMD ["/usr/bin/env", "bash"]
