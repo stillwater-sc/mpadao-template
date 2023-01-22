@@ -33,6 +33,14 @@ RUN set -ex \
   && tar xzf cmake-${CMAKE_VERSION}-linux-x86_64.tar.gz -C /usr/local --strip-components=1 --no-same-owner \
   && rm -rf cmake-${CMAKE_VERSION}*
 
+# install a specific Boost version
+ENV BOOST_VERSION 1.81.0
+ENV BOOST_VERSION_ 1_81_0
+
+RUN wget --max-redirect 3 https://boostorg.jfrog.io/artifactory/main/release/${BOOST_VERSION}/source/boost_${BOOST_VERSION_}.tar.gz
+RUN mkdir -p /usr/include/boost && tar zxf boost_${BOOST_VERSION_}.tar.gz -C /usr/include/boost --strip-components=1
+RUN echo ${BOOST_ROOT}
+
 # create and use user stillwater
 RUN useradd -ms /bin/bash stillwater
 USER stillwater
