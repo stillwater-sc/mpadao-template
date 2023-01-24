@@ -89,7 +89,13 @@ To just build the projects in mixed-precision-ir and ignore build targets in Uni
 > cmake -DBUILD_DEMONSTRATION=OFF -DENABLE_TESTS=OFF ..
 ```
 
+## Updating the submodules
 
+If you want to update the submodules to the latest version of the upstream repos, issue this command:
+
+```bash
+> git submodule update --remote --merge
+```
 
 
 # Project structure

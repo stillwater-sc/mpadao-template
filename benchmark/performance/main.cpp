@@ -12,8 +12,7 @@
 #include <iostream>
 #include <iomanip>
 #include <universal/native/ieee754.hpp>
-// #include <universal/benchmark/performance_runner.hpp>  future location of the performance running after v3.67
-#include <universal/verification/performance_runner.hpp>
+#include <universal/benchmark/performance_runner.hpp>
 #include <universal/verification/test_case.hpp>
 #include <universal/number/cfloat/cfloat.hpp>
 #include <universal/blas/blas.hpp>
