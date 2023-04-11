@@ -26,6 +26,6 @@ try {
 	std::cout << to_binary(a) << " * " << to_binary(b) << " = " << to_binary(c) << '\n';
 }
 catch(const char* msg) {
-	std::cerr << "Caught unexcpected exception: " << msg << std::endl;
+	std::cerr << "Caught unexpected exception: " << msg << std::endl;
 	return EXIT_FAILURE;
 }
