@@ -31,9 +31,14 @@
 *.out
 *.app
 
+# IDEs
+.vs
+.ide
+
 # CMake
 CMake/
 share/
+CMakeSettings.json
 
 # Directories
 build/
