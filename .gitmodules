@@ -7,3 +7,6 @@
 [submodule "ext/stillwater-sc/mtl4"]
 	path = ext/stillwater-sc/mtl4
 	url = https://github.com/stillwater-sc/mtl4
+[submodule "ext/google/abseil"]
+	path = ext/google/abseil
+	url = https://github.com/abseil/abseil-cpp.git

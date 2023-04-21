@@ -16,5 +16,8 @@ add_subdirectory(apps/polynomial)
 # a purposefull example of a mixed-precision experiment for the quadratic equation
 add_subdirectory(apps/quadratic)
 
+# a purposefull example of using Abseil 
+add_subdirectory(apps/logging)
+
 # a full blown mixed-precision algorithm development and optimization project targeting matrix inversion algorithms
 add_subdirectory(solvers)

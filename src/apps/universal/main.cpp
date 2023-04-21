@@ -52,6 +52,6 @@ try {
 	}
 }
 catch(const char* msg) {
-	std::cerr << "Caught unexcpected exception: " << msg << std::endl;
+	std::cerr << "Caught unexpected exception: " << msg << std::endl;
 	return EXIT_FAILURE;
 }
