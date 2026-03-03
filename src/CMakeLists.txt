@@ -22,4 +22,8 @@ if(MPADAO_ENABLE_ABSEIL)
 endif()
 
 # a full blown mixed-precision algorithm development and optimization project targeting matrix inversion algorithms
-add_subdirectory(solvers)
+if(Boost_FOUND)
+	add_subdirectory(solvers)
+else()
+	message(STATUS "Boost not found: skipping solvers (requires Boost multiprecision)")
+endif()
