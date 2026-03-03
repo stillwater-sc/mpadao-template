@@ -81,8 +81,12 @@ enable_testing()
 # of build, install, and uninstall targets.
 add_subdirectory(${MPADAO_ROOT_DIR}/ext/stillwater-sc/universal build_universal)
 
-# MTL4 is a C++ header-only library, so we do not need to build anything
-add_subdirectory(${MPADAO_ROOT_DIR}/ext/stillwater-sc/mtl4 build_mtl4)
+# MTL4 is a C++ header-only library that requires Boost
+if(Boost_FOUND)
+	add_subdirectory(${MPADAO_ROOT_DIR}/ext/stillwater-sc/mtl4 build_mtl4)
+else()
+	message(STATUS "Boost not found: skipping MTL4 (required by solvers and performance benchmark)")
+endif()
 
 add_subdirectory(test)
 add_subdirectory(src)
