@@ -16,7 +16,7 @@
 #include <universal/benchmark/performance_runner.hpp>
 #include <universal/verification/test_case.hpp>
 #include <universal/number/cfloat/cfloat.hpp>
-#include <universal/blas/blas.hpp>
+#include <blas/blas.hpp>
 #include <boost/numeric/mtl/mtl.hpp>
 
 namespace sw::universal {
@@ -82,7 +82,7 @@ template<typename Scalar>
 void FloatDotPerformanceWorkload(size_t NR_OPS) {
 	Scalar d{};
 	for (size_t i = 0; i < NR_OPS; ++i) {
-		d += sw::universal::blas::dot(fva, fvb);
+		d += sw::blas::dot(fva, fvb);
 	}
 	if (d == 0.0f) std::cout << "vectors are perpendicular" << '\n';
 }
@@ -91,7 +91,7 @@ template<typename Scalar>
 void FP8DotPerformanceWorkload(size_t NR_OPS) {
 	Scalar d{};
 	for (size_t i = 0; i < NR_OPS; ++i) {
-		d += sw::universal::blas::dot(qrpva, qrpvb);
+		d += sw::blas::dot(qrpva, qrpvb);
 	}
 	if (d == 0.0f) std::cout << "vectors are perpendicular" << '\n';
 }
@@ -100,7 +100,7 @@ template<typename Scalar>
 void FP16DotPerformanceWorkload(size_t NR_OPS) {
 	Scalar d{};
 	for (size_t i = 0; i < NR_OPS; ++i) {
-		d += sw::universal::blas::dot(hpva, hpvb);
+		d += sw::blas::dot(hpva, hpvb);
 	}
 	if (d == 0.0f) std::cout << "vectors are perpendicular" << '\n';
 }
@@ -109,7 +109,7 @@ template<typename Scalar>
 void FP32DotPerformanceWorkload(size_t NR_OPS) {
 	Scalar d{};
 	for (size_t i = 0; i < NR_OPS; ++i) {
-		d += sw::universal::blas::dot(spva, spvb);
+		d += sw::blas::dot(spva, spvb);
 	}
 	if (d == 0.0f) std::cout << "vectors are perpendicular" << '\n';
 }

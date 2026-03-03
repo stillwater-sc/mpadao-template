@@ -4,9 +4,10 @@
 // Copyright (C) 2017-2020 Stillwater Supercomputing, Inc.
 //
 // This file is part of the HPRBLAS project, which is released under an MIT Open Source license.
+#include <universal/number/posit/quire.hpp>
 
 /*
-a general vector norm | x | , sometimes written with a double bar as || x ||, 
+a general vector norm | x | , sometimes written with a double bar as || x ||,
 is a nonnegative norm defined such that
 
 1. | x | > 0 when x != 0 and | x |= 0 iff x = 0.
@@ -35,7 +36,7 @@ inline l1_norm(const Vector& v) {
 template<size_t nbits, size_t es>
 sw::universal::posit<nbits, es> l1_norm(const mtl::dense_vector<sw::universal::posit<nbits, es> > & v) {
 	using Scalar = sw::universal::posit<nbits, es>;
-	sw::universal::quire<nbits, es> q(0);
+	sw::universal::quire<nbits, es, nbits - 1> q(0);
 	for (unsigned i = 0; i < size(v); ++i) {
 		q += abs(v[i]);
 	}
@@ -47,7 +48,7 @@ sw::universal::posit<nbits, es> l1_norm(const mtl::dense_vector<sw::universal::p
 template<size_t nbits, size_t es>
 sw::universal::posit<nbits, es> l1_norm(const mtl::dense2D<sw::universal::posit<nbits, es> > & M) {
 	using Scalar = sw::universal::posit<nbits, es>;
-	sw::universal::quire<nbits, es> q(0);
+	sw::universal::quire<nbits, es, nbits - 1> q(0);
 	for (unsigned i = 0; i < mtl::mat::num_rows(M); ++i) {
 		for (unsigned j = 0; j < mtl::mat::num_cols(M); ++j) {
 			q += abs(M[i][j]);
@@ -74,7 +75,7 @@ typename Vector::value_type l2_norm(const Vector& v) {
 template<size_t nbits, size_t es>
 sw::universal::posit<nbits, es> l2_norm(const mtl::vec::dense_vector<sw::universal::posit<nbits, es> >& v) {
 	using Scalar = sw::universal::posit<nbits,es>;
-	sw::universal::quire<nbits, es> q(0);
+	sw::universal::quire<nbits, es, nbits - 1> q(0);
 	for (unsigned i = 0; i < size(v); ++i) {
 		q += sw::universal::quire_mul(v[i], v[i]);
 	}
@@ -129,7 +130,7 @@ template<size_t nbits, size_t es>
 sw::universal::posit<nbits, es> frobenius_norm(const mtl::dense2D<sw::universal::posit<nbits, es> >& M) {
 	assert(mtl::mat::num_rows(M) == mtl::mat::num_cols(M)); // assuming squareness
 	int N = int(mtl::mat::num_cols(M));
-	sw::universal::quire<nbits, es> q(0);
+	sw::universal::quire<nbits, es, nbits - 1> q(0);
 	for (int i = 0; i < N; ++i) {
 		for (int j = 0; j < N; ++j) {
 			q += sw::universal::quire_mul(M[i][j], M[i][j]);

@@ -3,7 +3,7 @@ set(app_name polynomial)
 project(${app_name} CXX)
 
 # Universal is a C++ header-only library, so we do not need to build anything
-include_directories(${MPADAO_ROOT_DIR}/ext/stillwater-sc/universal/include)
+include_directories(${MPADAO_ROOT_DIR}/ext/stillwater-sc/universal/include/sw)
 
 # source files that make up the command
 set(SOURCE_FILES

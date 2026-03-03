@@ -10,7 +10,7 @@ set(ABSL_PROPAGATE_CXX_STD ON)
 add_subdirectory(${MPADAO_ROOT_DIR}/ext/google/abseil build_abseil)
 
 # Universal is a C++ header-only library, so we do not need to build anything
-include_directories(${MPADAO_ROOT_DIR}/ext/stillwater-sc/universal/include)
+include_directories(${MPADAO_ROOT_DIR}/ext/stillwater-sc/universal/include/sw)
 include_directories(${MPADAO_ROOT_DIR}/ext/google/abseil)
 
 # source files that make up the command
