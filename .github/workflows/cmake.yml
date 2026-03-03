@@ -22,24 +22,24 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        #os: [ windows-latest, macos-latest, ubuntu-latest ] 
+        #os: [ windows-latest, macos-latest, ubuntu-latest ]
         include:
           - os: windows-latest
             toolset: msvc
             version: 2022
-          - os: ubuntu-22.04 # need to set explicity os version
+          - os: ubuntu-22.04 # need to set explicitly os version
             toolset: gcc
             version: 22.04   # the reason why you need to set os version
-          - os: macos-11
+          - os: macos-13
             toolset: clang
-            version: 11
+            version: 13
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           submodules: recursive
-      
+
       - name: Install BOOST
         uses: MarkusJx/install-boost@v2.4.3
         id: install-boost
@@ -64,8 +64,7 @@ jobs:
 
       - name: Test
         working-directory: ${{github.workspace}}/build
-        # Execute tests defined by the CMake configuration.  
+        # Execute tests defined by the CMake configuration.
         # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
         #run: ctest -V -C ${{env.BUILD_TYPE}}
         run: ctest -C ${{env.BUILD_TYPE}}
-      
