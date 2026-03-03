@@ -2,9 +2,10 @@
 //
 // Copyright (C) 2017-2023 Stillwater Supercomputing, Inc.
 //
-// This file is part of the mixed-precision iterative refinement project, which is released under an MIT Open Source license.
+// This file is part of the MPADAO project, which is released under an MIT Open Source license.
 #include <iostream>
 #include <vector>
+#include <cstdint>
 #include <universal/number/cfloat/cfloat.hpp>
 
 using Half = sw::universal::half;

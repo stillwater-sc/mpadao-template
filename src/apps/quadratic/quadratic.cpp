@@ -6,16 +6,17 @@
 * @copyright:  Copyright (c) 2023 Stillwater Supercomputing, Inc.
 * @license:    MIT Open Source license
 *
-* This file is part of the Mixed Precision Iterative Refinement project
+* This file is part of the MPADAO project
 * *************************************************************************
 */
 #include <universal/utility/directives.hpp>
+#include <cstdint>
 #include <limits>
 #if (__cplusplus == 202003L) || (_MSVC_LANG == 202003L)
 #include <numbers>    // high-precision numbers
 #endif
 
-/* 
+/*
 	Background on the poor numerical performance of the quadratic solution
 	https://people.eecs.berkeley.edu/~wkahan/Qdrtcs.pdf
 	https://news.ycombinator.com/item?id=16949156
@@ -53,23 +54,6 @@ std::pair<Scalar, Scalar> Quadratic(const Scalar& a, const Scalar& b, const Scal
 	return roots;
 }
 
-void CompareBigTerms(float a, float b, float c) {
-	using namespace sw::universal;
-	integer<64> inta(a);
-	integer<64> intb(b);
-	integer<64> intc(c);
-	integer<64> difference = intb * intb - 4 * inta * intc;
-	std::cout << "    (b^2 - 4ac)      : " << sw::universal::to_binary(difference) << " : " << difference << '\n';
-
-	{
-		Fixed64 a;
-		a = 100000.0f;
-		std::cout << "a   : " << to_binary(a) << " : " << a << '\n';
-		a *= a;
-		std::cout << "a^2 : " << to_binary(a) << " : " << a << '\n';
-	}
-}
-
 template<typename Real>
 void CompareTerms(Real a, Real b, Real c) {
     std::cout << "a                    : " << sw::universal::to_binary(a) << " : " << a << '\n';
@@ -92,48 +76,6 @@ void CompareTerms(Real a, Real b, Real c) {
 	std::cout << "root                 : " << sw::universal::to_binary(root) << " : " << root << '\n';
 }
 
-void CompareTypes(float a, float b, float c) {
-	std::cout << "16-bit floating-point\n";
-	CompareTerms<Float16>(a, b, c);
-	std::cout << '\n';
-
-	std::cout << "32-bit floating-point\n";
-	CompareTerms<Float32>(a, b, c);
-	std::cout << '\n';
-
-	std::cout << "native single precision floating-point\n";
-	CompareTerms<FloatSP>(a, b, c);
-	std::cout << '\n';
-
-	std::cout << "48-bit floating-point\n";
-	CompareTerms<Float48>(a, b, c);
-	std::cout << '\n';
-
-	std::cout << "64-bit floating-point\n";
-	CompareTerms<Float64>(a, b, c);
-	std::cout << '\n';
-
-	std::cout << "native double precision floating-point\n";
-	CompareTerms<FloatDP>(a, b, c);
-	std::cout << '\n';
-
-	std::cout << "single precision posit<32, 2>\n";
-	CompareTerms<Posit32>(a, b, c);
-	std::cout << '\n';
-
-	std::cout << "custom precision posit<48, 2>\n";
-	CompareTerms<Posit48>(a, b, c);
-	std::cout << '\n';
-
-	std::cout << "double precision posit<64, 2>\n";
-	CompareTerms<Posit64>(a, b, c);
-	std::cout << '\n';
-
-	std::cout << "fixed-point fixpnt<64, 16>\n";
-	CompareTerms<Fixed64>(a, b, c);
-	std::cout << '\n';
-}
-
 void CompareRoots(float fa, float fb, float fc) {
 	std::cout << "a*x^2 + b*x + c = 0 : " << fa << ", " << fb << ", " << fc << '\n';
 	constexpr unsigned TAG_WIDTH = 80;
@@ -150,13 +92,13 @@ void CompareRoots(float fa, float fb, float fc) {
 		std::cout << std::setw(TAG_WIDTH) << std::left << type_tag(Scalar()) << " roots: " << roots.first << ", " << roots.second << std::endl;
 	}
 	{
-		using Scalar = Fixed64; 
+		using Scalar = Fixed64;
 		//using Scalar = sw::universal::fixpnt<32, 16, sw::universal::Saturate>;  // divide is TBD
 		Scalar a{ fa }, b{ fb }, c{ fc };
 		try {
 			std::pair<Scalar, Scalar> roots = Quadratic(a, b, c);
 			std::cout << std::setw(TAG_WIDTH) << type_tag(Scalar()) << " roots: " << roots.first << ", " << roots.second << std::endl;
-		} 
+		}
 		catch (const sw::universal::universal_arithmetic_exception& err) {
 			std::cerr << "Caught unexpected universal arithmetic exception: " << err.what() << '\n';
 			std::cerr << "Likely culprit is that the dynamic range of the fixpnt is insufficient to capture the b^2 - 4ac term\n";
@@ -196,7 +138,7 @@ try {
 
 	std::cout << std::setprecision(precision);
 	std::cout << std::endl;
-	
+
 	return EXIT_SUCCESS;
 }
 catch (char const* msg) {

@@ -6,7 +6,7 @@
 * @copyright:  Copyright (c) 2023 Stillwater Supercomputing, Inc.
 * @license:    MIT Open Source license
 *
-* This file is part of the Mixed Precision Iterative Refinement project
+* This file is part of the MPADAO project
 * *************************************************************************
 */
 #include <iostream>
@@ -35,7 +35,7 @@ void FunctionNest() {
 	Kernel1();
 }
 
-int main() 
+int main()
 try {
 	using namespace sw::universal;
 
@@ -53,8 +53,10 @@ try {
 
 	FunctionNest();
 
-	// fatal: aborting
-	LOG(FATAL) << "fatal error, terminating!";
+	return EXIT_SUCCESS;
+
+	// LOG(FATAL) calls abort() — uncomment only for testing fatal error handling
+	// LOG(FATAL) << "fatal error, terminating!";
 }
 catch(const char* msg) {
 	std::cerr << "Caught unexpected exception: " << msg << std::endl;

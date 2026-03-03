@@ -2,9 +2,10 @@
 //
 // Copyright (C) 2017-2023 Stillwater Supercomputing, Inc.
 //
-// This file is part of the mixed-precision iterative refinement project, which is released under an MIT Open Source license.
+// This file is part of the MPADAO project, which is released under an MIT Open Source license.
 #include <iostream>
 #include <vector>
+#include <cstdint>
 #include <universal/number/fixpnt/fixpnt.hpp>
 
 using fp8_4s = sw::universal::fixpnt<8, 4, sw::universal::Saturate, uint8_t>;

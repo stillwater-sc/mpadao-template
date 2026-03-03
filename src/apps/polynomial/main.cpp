@@ -2,12 +2,13 @@
 //
 // Copyright (C) 2017-2023 Stillwater Supercomputing, Inc.
 //
-// This file is part of the mixed-precision iterative refinement project, which is released under an MIT Open Source license.
+// This file is part of the MPADAO project, which is released under an MIT Open Source license.
 #include <universal/utility/directives.hpp>
 #include <iostream>
 #include <iomanip>
 #include <string>
 #include <cmath>
+#include <cstdint>
 #include <limits>
 
 // static size arithmetic systems
@@ -16,6 +17,8 @@
 #include <universal/number/cfloat/cfloat.hpp>
 #include <universal/number/posit/posit.hpp>
 #include <universal/number/lns/lns.hpp>
+#include <universal/number/areal/areal.hpp>
+#include <universal/number/unum/unum.hpp>
 // elastic arithmetic systems
 #include <universal/number/einteger/einteger.hpp>
 // verification utilities
@@ -42,13 +45,17 @@ using Integer = sw::universal::integer<8, uint8_t, sw::universal::IntegerNumberT
 using Fixpnt  = sw::universal::fixpnt<8, 4, sw::universal::Saturate, uint8_t>;
 using Cfloat  = sw::universal::half;
 using Posit   = sw::universal::posit<8,2>;
-using Lns     = sw::universal::lns<8, 2>;
+using Lns     = sw::universal::lns<8, 2, std::uint8_t>;
+using Areal   = sw::universal::areal<8, 2, uint8_t>;
+using Unum    = sw::universal::unum<8, 2, uint8_t>;
 
 Integer integerPolynomial(const std::vector<int>& coef, const Integer& x);
 Fixpnt  fixpntPolynomial(const std::vector<int>& coef, const Fixpnt& x);
 Cfloat  cfloatPolynomial(const std::vector<int>& coef, const Cfloat& x);
 Posit   positPolynomial(const std::vector<int>& coef, const Posit& x);
 Lns     lnsPolynomial(const std::vector<int>& coef, const Lns& x);
+Areal   arealPolynomial(const std::vector<int>& coef, const Areal& x);
+Unum    unumPolynomial(const std::vector<int>& coef, const Unum& x);
 
 int main()
 try {
@@ -73,12 +80,14 @@ try {
 	coefficients.push_back(-1); // f
 
 	float a(1.0f + 1.0f / 8);
-	
+
 	std::cout << "integer      : " << integerPolynomial(coefficients, Integer(a)) << '\n';
 	std::cout << "fixpnt       : " << fixpntPolynomial(coefficients, Fixpnt(a)) << '\n';
 	std::cout << "cfloat       : " << cfloatPolynomial(coefficients, Cfloat(a)) << '\n';
 	std::cout << "posit        : " << positPolynomial(coefficients, Posit(a)) << '\n';
 	std::cout << "lns          : " << lnsPolynomial(coefficients, Lns(a)) << '\n';
+	std::cout << "areal        : " << arealPolynomial(coefficients, Areal(a)) << '\n';
+	std::cout << "unum         : " << unumPolynomial(coefficients, Unum(a)) << '\n';
 
 	ReportTestSuiteResults(test_suite, nrOfFailedTestCases);
 	return EXIT_SUCCESS; // ignore failures

@@ -6,15 +6,16 @@
 * @copyright:  Copyright (c) 2023 Stillwater Supercomputing, Inc.
 * @license:    MIT Open Source license
 *
-* This file is part of the Mixed Precision Iterative Refinement project
+* This file is part of the MPADAO project
 * *************************************************************************
 */
 #include <iostream>
 #include <iomanip>
+#include <cstdint>
 
 #include <universal/number/cfloat/cfloat.hpp>
 
-int main() 
+int main()
 try {
 	using namespace sw::universal;
 
@@ -50,6 +51,8 @@ try {
 		std::cout << to_binary(ulp(fp8_4)) << " " << ulp(fp8_4) << '\n';
 
 	}
+
+	return EXIT_SUCCESS;
 }
 catch(const char* msg) {
 	std::cerr << "Caught unexpected exception: " << msg << std::endl;

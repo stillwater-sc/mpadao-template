@@ -6,7 +6,7 @@
 * @copyright:  Copyright (c) 2023 Stillwater Supercomputing, Inc.
 * @license:    MIT Open Source license
 *
-* This file is part of the Mixed Precision Iterative Refinement project
+* This file is part of the MPADAO project
 * *************************************************************************
 */
 
@@ -44,9 +44,9 @@ namespace sw {
 					while (a[i + c][i] == 0 && (i + c) < n)	++c;
 					if ((i + c) == n) break;
 
-					for (unsigned j = i, k = 0; k < n; ++k) {
-						std::swap(a[j][k], a[j + c][k]);
-						std::cerr << "TBD" << std::endl; // need to create a permutation matrix
+					for (unsigned k = 0; k < n; ++k) {
+						std::swap(a[i][k], a[i + c][k]);
+						std::swap(inv[i][k], inv[i + c][k]);
 					}
 				}
 				// transform to diagonal matrix
