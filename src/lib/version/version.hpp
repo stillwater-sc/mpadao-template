@@ -1,12 +1,13 @@
 #pragma once
 #include <string>
+#include <version_config.hpp>
 
-namespace ir {
+namespace mpadao {
 
-static const std::string MAJOR_VERSION = std::string("0");
-static const std::string MINOR_VERSION = std::string("1");
-static const std::string PATCH_VERSION = std::string("0");
+inline constexpr int MAJOR_VERSION = MPADAO_VERSION_MAJOR;
+inline constexpr int MINOR_VERSION = MPADAO_VERSION_MINOR;
+inline constexpr int PATCH_VERSION = MPADAO_VERSION_PATCH;
 
 std::string get_semver();
 
-}
+} // namespace mpadao

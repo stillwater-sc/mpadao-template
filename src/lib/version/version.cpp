@@ -1,9 +1,9 @@
 #include <version.hpp>
 
-namespace ir {
+namespace mpadao {
 
 std::string get_semver() {
-	return MAJOR_VERSION + std::string(".") + MINOR_VERSION + std::string(".") + PATCH_VERSION;
+	return std::to_string(MAJOR_VERSION) + "." + std::to_string(MINOR_VERSION) + "." + std::to_string(PATCH_VERSION);
 }
 
-}
+} // namespace mpadao

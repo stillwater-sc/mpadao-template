@@ -6,9 +6,11 @@ int main(int argc, char* argv[])
 try {
 	std::cout << HEADER << '\n';
 
-	std::cout << "VERSION: " << ir::get_semver() << '\n';
+	std::cout << "VERSION: " << mpadao::get_semver() << '\n';
+
+	return EXIT_SUCCESS;
 }
 catch(...) {
 	std::cerr << "Caught unexpected exception" << std::endl;
+	return EXIT_FAILURE;
 }
-
