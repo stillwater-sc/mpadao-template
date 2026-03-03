@@ -21,7 +21,7 @@
 #include <universal/number/posit/posit.hpp>
 
 // Reference value: pi^2/6 to high precision
-static const double BASEL_REFERENCE = M_PI * M_PI / 6.0;
+static const double BASEL_REFERENCE = 3.14159265358979323846 * 3.14159265358979323846 / 6.0;
 
 template<typename Scalar>
 void BaselAccuracyBenchmark(const std::string& type_name, unsigned N) {
