@@ -85,5 +85,5 @@ void printSubMatrix(std::ostream& ostr, const std::string& name, const Matrix& A
 	ostr << std::setprecision(old_prec);
 }
 	
-} // namespace blas
+} // namespace hprblas
 } // namespace sw

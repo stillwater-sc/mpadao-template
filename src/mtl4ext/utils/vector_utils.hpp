@@ -3,7 +3,9 @@
 //
 // Copyright (C) 2017-2019 Stillwater Supercomputing, Inc.
 //
-// This file is part of the universal numbers project, which is released under an MIT Open Source license.
+// This file is part of the HPRBLAS project, which is released under an MIT Open Source license.
+
+#include <random>
 
 namespace sw {
 namespace hprblas {
@@ -17,37 +19,37 @@ void init(Vector& x, const Scalar& value) {
 // generate random data vector
 template<typename element_T>
 void randomVectorFill(size_t n, std::vector<element_T>& vec) {
+	std::random_device rd;
+	std::mt19937 engine(rd());
+	std::uniform_real_distribution<double> dist(0.0, 1.0);
 	for (size_t i = 0; i < n; i++) {
-		int rnd1 = rand();
-		int rnd2 = rand();
-		double rnd = rnd1 / (double)rnd2;
-		vec[i] = (element_T)rnd;
+		vec[i] = (element_T)dist(engine);
 	}
 }
 
 // generate a vector of random permutations around 0.0
 // contraction is a right shift of the random variable causing smaller fluctuations
-// RAND_MAX is typically a 16bit number so can't contract more than 15 bits
 template<typename element_T>
 void randomVectorFillAroundZeroEPS(size_t n, std::vector<element_T>& vec, size_t contraction = 6) {
+	std::random_device rd;
+	std::mt19937 engine(rd());
+	double scale = 1.0 / (1 << contraction);
+	std::uniform_real_distribution<double> dist(-scale, scale);
 	for (size_t i = 0; i < n; i++) {
-		int rnd1 = (rand() - (RAND_MAX >> 1)) >> contraction;
-		double eps = rnd1 / (double)RAND_MAX;
-		double v = eps;
-		vec[i] = (element_T)v;
+		vec[i] = (element_T)dist(engine);
 	}
 }
 
 // generate a vector of random permutations around 1.0
 // contraction is a right shift of the random variable causing smaller fluctuations
-// RAND_MAX is typically a 16bit number so can't contract more than 15 bits
 template<typename element_T>
 void randomVectorFillAroundOneEPS(size_t n, std::vector<element_T>& vec, size_t contraction = 6) {
+	std::random_device rd;
+	std::mt19937 engine(rd());
+	double scale = 1.0 / (1 << contraction);
+	std::uniform_real_distribution<double> dist(-scale, scale);
 	for (size_t i = 0; i < n; i++) {
-		int rnd1 = (rand() - (RAND_MAX >> 1)) >> contraction;
-		double eps = rnd1 / (double)RAND_MAX;
-		double v = 1.0 + eps;
-		vec[i] = (element_T)v;
+		vec[i] = (element_T)(1.0 + dist(engine));
 	}
 }
 
@@ -73,5 +75,5 @@ void sampleVector(std::string vec_name, std::vector<element_T>& vec, uint32_t st
 	std::cout << std::endl;
 }
 
-} // namespace blas
+} // namespace hprblas
 } // namespace sw

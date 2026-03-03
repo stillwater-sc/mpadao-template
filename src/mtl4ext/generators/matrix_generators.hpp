@@ -257,7 +257,7 @@ print(Q);
 */
 template<typename Matrix>
 void uniform_rand_orthogonal(Matrix& A) {
-
+	throw std::runtime_error("uniform_rand_orthogonal: not yet implemented");
 }
 
 //
