@@ -1,16 +1,17 @@
 /** ************************************************************************
-* performance: skeleton to develop algorithms with high performance
+* performance: benchmark measuring time-to-solution for dot products
 *
 * @author:     Theodore Omtzigt
 * @date:       2023-01-16
 * @copyright:  Copyright (c) 2023 Stillwater Supercomputing, Inc.
 * @license:    MIT Open Source license
 *
-* This file is part of the Mixed Precision Iterative Refinement project
+* This file is part of the MPADAO project
 * *************************************************************************
 */
 #include <iostream>
 #include <iomanip>
+#include <random>
 #include <universal/native/ieee754.hpp>
 #include <universal/benchmark/performance_runner.hpp>
 #include <universal/verification/test_case.hpp>
@@ -56,6 +57,25 @@ static std::vector<sw::universal::fp64> dpva(nrElements), dpvb(nrElements);
 static std::vector<sw::universal::fp80> xpva(nrElements), xpvb(nrElements);
 static std::vector<sw::universal::fp128> qpva(nrElements), qpvb(nrElements);
 
+// Initialize all benchmark vectors with random data
+void InitializeVectors() {
+	std::random_device rd;
+	std::mt19937 engine(rd());
+	std::uniform_real_distribution<float> dist(-1.0f, 1.0f);
+
+	for (unsigned i = 0; i < nrElements; ++i) {
+		float va = dist(engine);
+		float vb = dist(engine);
+		fva[i] = va;
+		fvb[i] = vb;
+		qrpva[i] = va; qrpvb[i] = vb;
+		hpva[i] = va;  hpvb[i] = vb;
+		spva[i] = va;  spvb[i] = vb;
+		dpva[i] = va;  dpvb[i] = vb;
+		xpva[i] = va;  xpvb[i] = vb;
+		qpva[i] = va;  qpvb[i] = vb;
+	}
+}
 
 // Generic workload for testing dot products
 template<typename Scalar>
@@ -94,9 +114,11 @@ void FP32DotPerformanceWorkload(size_t NR_OPS) {
 	if (d == 0.0f) std::cout << "vectors are perpendicular" << '\n';
 }
 
-int main() 
+int main()
 try {
 	using namespace sw::universal;
+
+	InitializeVectors();
 
 	size_t NR_OPS = 1000;
 
@@ -104,8 +126,10 @@ try {
 	PerformanceRunner("fp8   dot product", FP8DotPerformanceWorkload<fp8>, NR_OPS);
 	PerformanceRunner("fp16  dot product", FP16DotPerformanceWorkload<fp16>, NR_OPS);
 	PerformanceRunner("fp32  dot product", FP32DotPerformanceWorkload<fp32>, NR_OPS);
+
+	return EXIT_SUCCESS;
 }
 catch(const char* msg) {
-	std::cerr << "Caught unexcpected exception: " << msg << std::endl;
+	std::cerr << "Caught unexpected exception: " << msg << std::endl;
 	return EXIT_FAILURE;
 }
