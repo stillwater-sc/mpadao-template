@@ -6,7 +6,7 @@ Once you use this template, you will need to adjust the status badges below to p
 
 | **System** | **Status** | **More information** |
 |------------|------------|----------------------|
-| [FOSSA Status](https://app.fossa.com/projects/git%2Bgithub.com%2Fstillwater-sc%2Funiversal) | [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fstillwater-sc%2Funiversal.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fstillwater-sc%2Funiversal?ref=badge_shield) | Open-source license dependency scanner Stillwater Universal|
+| [FOSSA Status](https://app.fossa.com/projects/git%2Bgithub.com%2Fstillwater-sc%2Funiversal) | [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fstillwater-sc%2Funiversal.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fstillwater-sc%2Funiversal?ref=badge_shield) | Open-source license dependency scanner (update URL after forking)|
 | [GitHub Actions](https://github.com/stillwater-sc/mpadao-template/actions) | [![Build Status](https://github.com/stillwater-sc/mpadao-template/actions/workflows/cmake.yml/badge.svg?branch=main)](https://github.com/stillwater-sc/mpadao-template) | Latest Linux/MacOS/Windows builds and regression tests |
 
 
@@ -27,17 +27,17 @@ After that, the repo is ready to be build:
 > make
 ```
 
-This will build the libraries, the CLI command projects, and the tests in `test/mpir_tests`.
+This will build the libraries, the CLI command projects, and the tests in `test/mpadao_tests`.
 
-When using VSCode, the repository contains a devcontainer spec in the directory $MPIR_ROOT/.devcontainer. 
+When using VSCode, the repository contains a devcontainer spec in the directory $MPADAO_ROOT/.devcontainer.
 
 ![VS code environment](img/vscode-devcontainer.png)
 
-The default container provides a build environment based on Clang14:
+The default container provides a build environment based on GCC 12:
 
 ```json
 {
-	"image": "stillwater/universal:clang14builder"
+	"image": "stillwater/mpadao:gcc12builder"
 }
 ```
 There is a set of builders that can be used that contain specific compilers. Other environments are:
@@ -70,12 +70,12 @@ To install the command line tools for ease of use, issue the `install` target:
 > make install
 ```
 
-This command will populate the $MPIR_ROOT/bin, $MPIR_ROOT/lib, and $MPIR_ROOT/include directories, where $MPIR_ROOT represents the directory path of the mixed-precision-ir repository clone.
+This command will populate the $MPADAO_ROOT/bin, $MPADAO_ROOT/lib, and $MPADAO_ROOT/include directories, where $MPADAO_ROOT represents the directory path of the mpadao-template repository clone.
 
 If you are on a Linux or MacOS system, you can add the bin directory to your path to pick up the command line tools:
 
 ```bash
-> export PATH=$PATH:$MPIR_ROOT/bin
+> export PATH=$PATH:$MPADAO_ROOT/bin
 ```
 
 For Windows, use the environment variable editor to do the same.
@@ -83,10 +83,16 @@ For Windows, use the environment variable editor to do the same.
 
 ## Streamlining the Build
 
-To just build the projects in mixed-precision-ir and ignore build targets in Universal and MTL4, use:
+To just build the projects in mpadao-template and ignore build targets in Universal and MTL4, use:
 
 ```zsh
 > cmake -DBUILD_DEMONSTRATION=OFF -DENABLE_TESTS=OFF ..
+```
+
+To enable the Abseil logging example, add:
+
+```zsh
+> cmake -DMPADAO_ENABLE_ABSEIL=ON ..
 ```
 
 ## Updating the submodules
@@ -103,3 +109,17 @@ If you want to update the submodules to the latest version of the upstream repos
 The following figure shows the project structure of this repository:
 
 ![Project Structure](img/project-structure.png)
+
+# Customizing This Template
+
+After forking this template, update the following to match your project:
+
+- [ ] **Project name**: Update `project()` in root `CMakeLists.txt`
+- [ ] **CMake variable prefix**: Rename `MPADAO_*` variables if desired
+- [ ] **Namespace**: Replace `mpadao::` in `src/lib/version/` with your project namespace
+- [ ] **Version**: Set `MPADAO_MAJOR`, `MPADAO_MINOR`, `MPADAO_PATCH` in `CMakeLists.txt`
+- [ ] **GitHub URLs**: Update badge links and `HOMEPAGE_URL` in `CMakeLists.txt`
+- [ ] **FOSSA badge**: Point to your own FOSSA project
+- [ ] **Docker images**: Update `stillwater/mpadao:*` references in `.devcontainer/` and `docker/`
+- [ ] **CI workflow**: Update `.github/workflows/cmake.yml` triggers and branch names
+- [ ] **README**: Replace this checklist with your project description
