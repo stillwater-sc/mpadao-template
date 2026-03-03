@@ -1,5 +1,6 @@
 {
-	"image": "stillwater/mpadao:gcc12builder",
+	"image": "stillwater/mpadao:latest",
+	"postCreateCommand": "git submodule init && git submodule update",
 	"customizations": {
 		"vscode": {
 			"extensions": [

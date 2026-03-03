@@ -81,4 +81,4 @@ GitHub Actions (`.github/workflows/cmake.yml`) builds on:
 
 ## Docker Development
 
-Pre-built containers in `docker/` for GCC 9-12 and Clang 11-15. DevContainer configured for `stillwater/mpadao:gcc12builder`.
+Single development container (`docker/Dockerfile`) based on Ubuntu 24.04 with GCC 14 and Clang 18. Build with `docker build -t stillwater/mpadao:latest docker/`. GCC 14 is the default; switch to Clang via `CC=clang-18 CXX=clang++-18 cmake ..`. DevContainer configured for `stillwater/mpadao:latest`.

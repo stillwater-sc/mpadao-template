@@ -33,25 +33,21 @@ When using VSCode, the repository contains a devcontainer spec in the directory 
 
 ![VS code environment](img/vscode-devcontainer.png)
 
-The default container provides a build environment based on GCC 12:
+The development container ships both GCC 14 and Clang 18 on Ubuntu 24.04 LTS:
 
-```json
-{
-	"image": "stillwater/mpadao:gcc12builder"
-}
+```bash
+# Build the container locally
+docker build -t stillwater/mpadao:latest docker/
+
+# Run interactively with the repo mounted
+docker run --rm -it -v $(pwd):/home/dev/mpadao stillwater/mpadao:latest
 ```
-There is a set of builders that can be used that contain specific compilers. Other environments are:
-```text
-gcc9builder
-gcc10builder
-gcc11builder
-gcc12builder
-clang11builder
-clang12builder
-clang13builder
-clang14builder
+
+GCC 14 is the default compiler. To build with Clang instead:
+
+```bash
+CC=clang-18 CXX=clang++-18 cmake ..
 ```
-If you want to change your development container, simply replace the json with the container of your choice.
 
 You can also build natively. The .gitignore of this repo filters out the following directories:
 ```text
