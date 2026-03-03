@@ -14,7 +14,7 @@ add_executable(${app_name} ${SOURCE_FILES})
 set(folder "Applications/Mixed-Precision")
 set_target_properties(${app_name} PROPERTIES FOLDER ${folder})
 set(test_name ${app_name})
-add_test(${test_name} ${RUNTIME_OUTPUT_DIRECTORY}/${test_name})
+add_test(NAME ${test_name} COMMAND $<TARGET_FILE:${app_name}>)
 
 # add libraries if you need them
 #target_link_libraries(${app_name} required-library1 required-library2)

@@ -6,17 +6,9 @@ include_directories(${MPADAO_ROOT_DIR}/ext/stillwater-sc/universal/include)
 # MTL4 is a C++ header-only library, so no need to build anything either
 include_directories(${MPADAO_ROOT_DIR}/ext/stillwater-sc/mtl4)
 
-# source files that make up the command
-set(SOURCE_FILES
-)
-
 add_executable(matinverse gauss_jordan.cpp)
 set(folder "Solvers")
 set_target_properties(matinverse PROPERTIES FOLDER ${folder})
-
-#add_executable(cholesky cholesky.cpp)
-#set(folder "Solvers")
-#set_target_properties(cholesky PROPERTIES FOLDER ${folder})
 
 # add libraries if you need them
 #target_link_libraries(matinverse required-library1 required-library2)

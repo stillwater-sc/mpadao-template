@@ -21,13 +21,11 @@ message(STATUS "C++20 has been enabled by default")
 
 # Compiler specific environments
 if(CMAKE_COMPILER_IS_GNUCXX OR MINGW OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 
 	# include code quality flags
 	set(EXTRA_C_FLAGS "${EXTRA_C_FLAGS} -Wall -Wpedantic -Wno-narrowing -Wno-deprecated")
-	# specific flags for debug and release builds
-	#set(EXTRA_C_FLAGS_RELEASE "${EXTRA_C_FLAGS_RELEASE} -O3 -DNDEBUG")
-	#set(EXTRA_C_FLAGS_DEBUG "${EXTRA_C_FLAGS_DEBUG} -g3 -pthread")
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EXTRA_C_FLAGS}")
 
 elseif(MSVC)
 	# include code quality flags
@@ -36,6 +34,7 @@ elseif(MSVC)
 #	add_definitions(-D _SCL_SECURE_NO_WARNINGS)
 
     set(EXTRA_C_FLAGS "${EXTRA_C_FLAGS} /Zc:__cplusplus")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${EXTRA_C_FLAGS}")
 
 endif()
 
@@ -56,11 +55,20 @@ set(MPADAO_INSTALL_LIB_DIR ${PROJECT_SOURCE_DIR}/lib)
 set(MTL4EXT_INCLUDE_HEADERS_DIR ${PROJECT_SOURCE_DIR}/src/mtl4ext)
 set(VERSION_INCLUDE_HEADERS_DIR ${PROJECT_SOURCE_DIR}/src/lib/version)
 
-add_definitions(-D UNIVERSAL_ENABLE_TEST=OFF)
+set(UNIVERSAL_ENABLE_TEST OFF CACHE BOOL "Disable Universal regression tests" FORCE)
+
+option(MPADAO_ENABLE_ABSEIL "Enable Abseil logging support" OFF)
 
 include_directories(${MPADAO_INSTALL_INCLUDE_DIR})
 include_directories(${MTL4EXT_INCLUDE_HEADERS_DIR})
 include_directories(${VERSION_INCLUDE_HEADERS_DIR})
+
+# Generate version configuration header from CMake variables
+configure_file(
+	${PROJECT_SOURCE_DIR}/src/lib/version/version_config.hpp.in
+	${PROJECT_BINARY_DIR}/generated/version_config.hpp
+)
+include_directories(${PROJECT_BINARY_DIR}/generated)
 
 enable_testing()
 #include(CTest)
@@ -69,12 +77,12 @@ enable_testing()
 # if you do add this line, you will get all the Universal regression tests,
 # playground, education, applications, and command line utilities.
 # You can only add this build subdirectory to ONE and only ONE project
-# within the IR workspace. Multiple includes will yield multiple definitions
+# within the MPADAO workspace. Multiple includes will yield multiple definitions
 # of build, install, and uninstall targets.
-add_subdirectory(${MPADAO_ROOT_DIR}/ext/stillwater-sc/universal build_universal) 
+add_subdirectory(${MPADAO_ROOT_DIR}/ext/stillwater-sc/universal build_universal)
 
 # MTL4 is a C++ header-only library, so we do not need to build anything
-add_subdirectory(${MPADAO_ROOT_DIR}/ext/stillwater-sc/mtl4 build_mtl4) 
+add_subdirectory(${MPADAO_ROOT_DIR}/ext/stillwater-sc/mtl4 build_mtl4)
 
 add_subdirectory(test)
 add_subdirectory(src)
