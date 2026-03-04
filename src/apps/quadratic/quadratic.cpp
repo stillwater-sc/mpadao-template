@@ -7,23 +7,23 @@
 *
 * This program tells a story in four acts:
 *
-*   Act I   — "Just use float"
+*   Act I   - "Just use float"
 *             A textbook equation gives a root that is completely wrong.
 *
-*   Act II  — "Just use double"
+*   Act II  - "Just use double"
 *             A slightly harder equation defeats double precision too.
 *
-*   Act III — The brute-force fix: double-double and quad-double
+*   Act III - The brute-force fix: double-double and quad-double
 *             Throwing 128 or 256 bits at the problem buys correctness,
 *             but only pushes the cliff further away.
 *
-*   Act IV  — The algebraic fix: Vieta's formula
+*   Act IV  - The algebraic fix: Vieta's formula
 *             A one-line change makes even 32-bit float give the right
 *             answer.  Zero cost.  Zero extra bits.
 *
 * The moral: more bits is a band-aid; understanding the algorithm is
-* the cure.  But when you cannot rearrange the algebra — and many
-* real problems cannot — you need extended precision arithmetic,
+* the cure.  But when you cannot rearrange the algebra - and many
+* real problems cannot - you need extended precision arithmetic,
 * which is exactly what the Universal library provides.
 *
 * References:
@@ -188,7 +188,7 @@ void ShowCancellation(const std::string& label, Real a, Real b, Real c) {
 }
 
 // =====================================================================
-//  main — the four-act story
+//  main - the four-act story
 // =====================================================================
 
 int main()
@@ -211,14 +211,14 @@ try {
 	          << "log10(b^2 / 4ac).\n";
 
 	// =================================================================
-	//  Act I — Float fails
+	//  Act I - Float fails
 	// =================================================================
 
-	Separator("ACT I:  \"Just use float\" — it gives a wrong answer");
+	Separator("ACT I:  \"Just use float\" - it gives a wrong answer");
 
 	// Equation: x^2 + 100000*x + 1 = 0
 	// True roots: x1 = -99999.99999..., x2 = -0.00001000000000010...
-	// Digits lost: log10(1e10/4) = 9.4 — float has only 7.2
+	// Digits lost: log10(1e10/4) = 9.4 - float has only 7.2
 
 	double true_x1_case1 = -99999.99999;
 	double true_x2_case1 = -1.0e-5;    // via Vieta's: c/(a*x1) = 1/99999.99999
@@ -232,7 +232,7 @@ try {
 	ShowRoots("double (naive)", 1.0,  1.0e5,  1.0,  true_x1_case1, true_x2_case1);
 
 	std::cout << "\n  Float gives x2 = 0.  Completely wrong.\n"
-	          << "  Double gets x2 right — it has enough spare digits.\n"
+	          << "  Double gets x2 right - it has enough spare digits.\n"
 	          << "  \"No problem, we'll just use double.\"\n";
 
 	// Show the bit-level details
@@ -240,14 +240,14 @@ try {
 	ShowCancellation("float", 1.0f, 1.0e5f, 1.0f);
 
 	// =================================================================
-	//  Act II — Double also fails
+	//  Act II - Double also fails
 	// =================================================================
 
-	Separator("ACT II:  \"Just use double\" — it fails too");
+	Separator("ACT II:  \"Just use double\" - it fails too");
 
 	// Equation: x^2 + 1000000000*x + 1 = 0
 	// True roots: x1 = -999999999.999999999..., x2 = -1e-9
-	// Digits lost: log10(1e18/4) = 17.4 — double has only 15.9
+	// Digits lost: log10(1e18/4) = 17.4 - double has only 15.9
 
 	double true_x1_case2 = -1.0e9;
 	double true_x2_case2 = -1.0e-9;   // via Vieta's: 1 / 1e9
@@ -269,10 +269,10 @@ try {
 	ShowCancellation("double", 1.0, 1.0e9, 1.0);
 
 	// =================================================================
-	//  Act III — The brute-force fix: more bits
+	//  Act III - The brute-force fix: more bits
 	// =================================================================
 
-	Separator("ACT III:  The brute-force fix — double-double and quad-double");
+	Separator("ACT III:  The brute-force fix - double-double and quad-double");
 
 	std::cout << "A double-double (dd) pairs two doubles to get ~31 decimal digits.\n"
 	          << "A quad-double (qd) uses four doubles for ~62 decimal digits.\n"
@@ -297,7 +297,7 @@ try {
 	double true_x2_case3 = -1.0e-17;
 
 	std::cout << "\nCase 3: x^2 + 10^17 * x + 1 = 0   (x2 ~ -10^-17)\n";
-	std::cout << "  Digits lost: log10(10^34 / 4) = 33.6 — exceeds dd's 31 digits.\n";
+	std::cout << "  Digits lost: log10(10^34 / 4) = 33.6 - exceeds dd's 31 digits.\n";
 	ShowRoots("double-double", DD(1.0), DD(1.0e17), DD(1.0), true_x1_case3, true_x2_case3);
 	ShowRoots("quad-double",   QD(1.0), QD(1.0e17), QD(1.0), true_x1_case3, true_x2_case3);
 
@@ -305,10 +305,10 @@ try {
 	          << "  The pattern is clear: every fixed precision has a breaking point.\n";
 
 	// =================================================================
-	//  Act IV — The algebraic fix: Vieta's formula
+	//  Act IV - The algebraic fix: Vieta's formula
 	// =================================================================
 
-	Separator("ACT IV:  The algebraic fix — Vieta's formula");
+	Separator("ACT IV:  The algebraic fix - Vieta's formula");
 
 	std::cout << "Instead of computing both roots with the naive formula, compute\n"
 	          << "the root whose terms REINFORCE (no cancellation), then use\n"
@@ -316,17 +316,17 @@ try {
 	          << "This costs nothing in performance and works at EVERY precision,\n"
 	          << "including plain 32-bit float.\n\n";
 
-	// Case 1 — stable formula
+	// Case 1 - stable formula
 	std::cout << "Case 1: x^2 + 10^5 * x + 1 = 0   (x2 ~ -10^-5)\n";
 	ShowStableRoots("float (stable)",  1.0f, 1.0e5f, 1.0f, true_x1_case1, true_x2_case1);
 	ShowStableRoots("double (stable)", 1.0,  1.0e5,  1.0,  true_x1_case1, true_x2_case1);
 
-	// Case 2 — stable formula
+	// Case 2 - stable formula
 	std::cout << "\nCase 2: x^2 + 10^9 * x + 1 = 0   (x2 ~ -10^-9)\n";
 	ShowStableRoots("float (stable)",  1.0f, 1.0e9f, 1.0f, true_x1_case2, true_x2_case2);
 	ShowStableRoots("double (stable)", 1.0,  1.0e9,  1.0,  true_x1_case2, true_x2_case2);
 
-	// Case 3 — stable formula
+	// Case 3 - stable formula
 	std::cout << "\nCase 3: x^2 + 10^17 * x + 1 = 0   (x2 ~ -10^-17)\n";
 	ShowStableRoots("double (stable)", 1.0,  1.0e17, 1.0,  true_x1_case3, true_x2_case3);
 
@@ -334,7 +334,7 @@ try {
 	          << "  No extra memory, no performance penalty, no wider types needed.\n";
 
 	// =================================================================
-	//  Act V — Comparison across Universal number types
+	//  Act V - Comparison across Universal number types
 	// =================================================================
 
 	Separator("COMPARISON: the same equation across Universal number types");
@@ -372,13 +372,13 @@ try {
 	          << "   works at every precision.  When a reformulation exists,\n"
 	          << "   use it.\n\n"
 	          << "4. Many real problems have no algebraic fix.  Iterative\n"
-	          << "   solvers, neural network training, physical simulations —\n"
+	          << "   solvers, neural network training, physical simulations -\n"
 	          << "   these accumulate cancellations that cannot be rearranged\n"
 	          << "   away.  For those problems, you need extended precision\n"
 	          << "   arithmetic: double-double, quad-double, posits, or\n"
 	          << "   adaptive types like ereal.\n\n"
 	          << "5. The Universal library lets you explore this entire design\n"
-	          << "   space — from 8-bit floats to quad-double — with a single\n"
+	          << "   space - from 8-bit floats to quad-double - with a single\n"
 	          << "   template parameter change.\n";
 
 	std::cout << std::endl;
