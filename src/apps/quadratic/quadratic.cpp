@@ -52,7 +52,7 @@
 
 // Universal number systems
 #include <universal/number/cfloat/cfloat.hpp>
-#include <universal/number/posit/posit.hpp>
+#include <universal/number/posit1/posit1.hpp>
 #include <universal/number/dd/dd.hpp>
 #include <universal/number/qd/qd.hpp>
 
