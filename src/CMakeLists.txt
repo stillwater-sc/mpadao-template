@@ -16,6 +16,9 @@ add_subdirectory(apps/polynomial)
 # a purposeful example of a mixed-precision experiment for the quadratic equation
 add_subdirectory(apps/quadratic)
 
+# C++20 std::numbers vs Universal high-precision constants
+add_subdirectory(apps/constants)
+
 # Abseil logging integration (optional)
 if(MPADAO_ENABLE_ABSEIL)
 	add_subdirectory(apps/logging)

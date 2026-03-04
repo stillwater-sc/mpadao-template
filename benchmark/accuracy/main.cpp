@@ -16,12 +16,13 @@
 #include <iomanip>
 #include <cmath>
 #include <cstdint>
+#include <numbers>    // C++20: std::numbers::pi
 
 #include <universal/number/cfloat/cfloat.hpp>
 #include <universal/number/posit/posit.hpp>
 
-// Reference value: pi^2/6 to high precision
-static const double BASEL_REFERENCE = 3.14159265358979323846 * 3.14159265358979323846 / 6.0;
+// Reference value: pi^2/6 using the C++20 standard constant
+static const double BASEL_REFERENCE = std::numbers::pi * std::numbers::pi / 6.0;
 
 template<typename Scalar>
 void BaselAccuracyBenchmark(const std::string& type_name, unsigned N) {
