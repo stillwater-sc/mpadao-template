@@ -38,8 +38,9 @@ RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-14 100 \
     && update-alternatives --install /usr/bin/cc cc /usr/bin/gcc-14 100 \
     && update-alternatives --install /usr/bin/c++ c++ /usr/bin/g++-14 100
 
-# Non-root user
-RUN useradd -ms /bin/bash dev
+# Non-root user (remove default ubuntu user so dev gets UID 1000)
+RUN userdel -r ubuntu 2>/dev/null || true \
+    && useradd -ms /bin/bash -u 1000 dev
 USER dev
 WORKDIR /home/dev
 
