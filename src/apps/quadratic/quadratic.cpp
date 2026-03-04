@@ -291,17 +291,17 @@ try {
 	ShowRoots("quad-double",   QD(1.0), QD(1.0e9),  QD(1.0), true_x1_case2, true_x2_case2);
 
 	std::cout << "\n  Double-double and quad-double recover the small root.\n"
-	          << "  But this only pushes the cliff further away.  With b = 10^16\n"
-	          << "  even double-double would fail.  More bits is not a cure.\n";
+	          << "  But this only pushes the cliff further away.\n";
 
 	// Show a case that defeats double-double
-	double true_x1_case3 = -1.0e16;
-	double true_x2_case3 = -1.0e-16;
+	// b = 1e17: digits lost = log10(1e34/4) = 33.6, exceeds dd's ~31 digits
+	double true_x1_case3 = -1.0e17;
+	double true_x2_case3 = -1.0e-17;
 
-	std::cout << "\nCase 3: x^2 + 10^16 * x + 1 = 0   (x2 ~ -10^-16)\n";
-	std::cout << "  Digits lost: log10(10^32 / 4) = 31.6 — exceeds dd's 31 digits.\n";
-	ShowRoots("double-double", DD(1.0), DD(1.0e16), DD(1.0), true_x1_case3, true_x2_case3);
-	ShowRoots("quad-double",   QD(1.0), QD(1.0e16), QD(1.0), true_x1_case3, true_x2_case3);
+	std::cout << "\nCase 3: x^2 + 10^17 * x + 1 = 0   (x2 ~ -10^-17)\n";
+	std::cout << "  Digits lost: log10(10^34 / 4) = 33.6 — exceeds dd's 31 digits.\n";
+	ShowRoots("double-double", DD(1.0), DD(1.0e17), DD(1.0), true_x1_case3, true_x2_case3);
+	ShowRoots("quad-double",   QD(1.0), QD(1.0e17), QD(1.0), true_x1_case3, true_x2_case3);
 
 	std::cout << "\n  Double-double fails on Case 3, but quad-double (62 digits) survives.\n"
 	          << "  The pattern is clear: every fixed precision has a breaking point.\n";
@@ -329,8 +329,8 @@ try {
 	ShowStableRoots("double (stable)", 1.0,  1.0e9,  1.0,  true_x1_case2, true_x2_case2);
 
 	// Case 3 — stable formula
-	std::cout << "\nCase 3: x^2 + 10^16 * x + 1 = 0   (x2 ~ -10^-16)\n";
-	ShowStableRoots("double (stable)", 1.0,  1.0e16, 1.0,  true_x1_case3, true_x2_case3);
+	std::cout << "\nCase 3: x^2 + 10^17 * x + 1 = 0   (x2 ~ -10^-17)\n";
+	ShowStableRoots("double (stable)", 1.0,  1.0e17, 1.0,  true_x1_case3, true_x2_case3);
 
 	std::cout << "\n  Even plain float gives the right answer with the stable formula.\n"
 	          << "  No extra memory, no performance penalty, no wider types needed.\n";
