@@ -136,9 +136,8 @@ void ShowRoots(const std::string& label, const Scalar& a, const Scalar& b, const
 
 	std::cout << "  " << std::setw(LBL) << std::left << label
 	          << "x1 = " << std::setw(VAL) << std::right << v1
-	          << "   x2 = " << std::setw(VAL) << v2;
-	if (err2 > 0.01)
-		std::cout << "   <-- x2 relative error: " << std::scientific << std::setprecision(1) << err2 << std::defaultfloat;
+	          << "   x2 = " << std::setw(VAL) << v2
+	          << "   (x2 rel err: " << std::scientific << std::setprecision(1) << err2 << ")" << std::defaultfloat;
 	std::cout << '\n';
 }
 
@@ -151,9 +150,8 @@ void ShowStableRoots(const std::string& label, const Scalar& a, const Scalar& b,
 
 	std::cout << "  " << std::setw(LBL) << std::left << label
 	          << "x1 = " << std::setw(VAL) << std::right << v1
-	          << "   x2 = " << std::setw(VAL) << v2;
-	if (err2 < 1e-6)
-		std::cout << "   <-- correct!";
+	          << "   x2 = " << std::setw(VAL) << v2
+	          << "   (x2 rel err: " << std::scientific << std::setprecision(1) << err2 << ")" << std::defaultfloat;
 	std::cout << '\n';
 }
 
