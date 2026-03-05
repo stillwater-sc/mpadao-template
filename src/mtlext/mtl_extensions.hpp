@@ -23,25 +23,15 @@ void uniform_rand(Matrix& A, double lowerbound = 0.0, double upperbound = 1.0)
 	// **uniformly distributed** on the closed interval [lowerbound, upperbound].
 	// (Note that the range is [inclusive, inclusive].)
 	std::uniform_real_distribution<double> dist{ lowerbound, upperbound };
-	// Pattern to generate pseudo-random number.
-	// double rnd_value = dist(engine);
 
-	typedef typename Collection<Matrix>::value_type    value_type;
-	typedef typename Collection<Matrix>::size_type     size_type;
+	using value_type = typename Matrix::value_type;
+	using size_type  = typename Matrix::size_type;
 
-	// inserters add to the elements, so we need to set the value to 0 before we begin
-	A = 0.0;
-	{ // extra block unfortunately needed for VS2013
-		// Create inserter for matrix m
-		inserter<Matrix> ins(A, num_cols(A));
-
-		// generate and insert random values in A
-		for (size_type r = 0; r < num_rows(A); r++) {
-			for (size_type c = 0; c < num_cols(A); c++) {
-				ins[r][c] << value_type(dist(engine));
-			}
+	// generate and assign random values in A
+	for (size_type r = 0; r < num_rows(A); r++) {
+		for (size_type c = 0; c < num_cols(A); c++) {
+			A(r, c) = value_type(dist(engine));
 		}
-		// Destructor of ins sets final state of m
 	}
 }
 

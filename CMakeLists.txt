@@ -52,15 +52,17 @@ set(MPADAO_INSTALL_BIN_DIR ${PROJECT_SOURCE_DIR}/bin)
 set(MPADAO_INSTALL_LIB_DIR ${PROJECT_SOURCE_DIR}/lib)
 
 # constituent library headers
-set(MTL4EXT_INCLUDE_HEADERS_DIR ${PROJECT_SOURCE_DIR}/src/mtl4ext)
+set(MTLEXT_INCLUDE_HEADERS_DIR ${PROJECT_SOURCE_DIR}/src/mtlext)
 set(VERSION_INCLUDE_HEADERS_DIR ${PROJECT_SOURCE_DIR}/src/lib/version)
 
 set(UNIVERSAL_ENABLE_TEST OFF CACHE BOOL "Disable Universal regression tests" FORCE)
+set(MTL5_BUILD_TESTS OFF CACHE BOOL "Disable MTL5 tests when building as submodule" FORCE)
+set(MTL5_BUILD_EXAMPLES OFF CACHE BOOL "Disable MTL5 examples when building as submodule" FORCE)
 
 option(MPADAO_ENABLE_ABSEIL "Enable Abseil logging support" OFF)
 
 include_directories(${MPADAO_INSTALL_INCLUDE_DIR})
-include_directories(${MTL4EXT_INCLUDE_HEADERS_DIR})
+include_directories(${MTLEXT_INCLUDE_HEADERS_DIR})
 include_directories(${VERSION_INCLUDE_HEADERS_DIR})
 
 # Generate version configuration header from CMake variables
@@ -81,12 +83,11 @@ enable_testing()
 # of build, install, and uninstall targets.
 add_subdirectory(${MPADAO_ROOT_DIR}/ext/stillwater-sc/universal build_universal)
 
-# MTL4 is a C++ header-only library that requires Boost
-if(Boost_FOUND)
-	add_subdirectory(${MPADAO_ROOT_DIR}/ext/stillwater-sc/mtl4 build_mtl4)
-else()
-	message(STATUS "Boost not found: skipping MTL4 (required by solvers and performance benchmark)")
-endif()
+# MTL5 is a C++ header-only library (no Boost dependency)
+add_subdirectory(${MPADAO_ROOT_DIR}/ext/stillwater-sc/mtl5 build_mtl5)
+# MTL5 headers: source tree + generated version.hpp in build tree
+include_directories(${MPADAO_ROOT_DIR}/ext/stillwater-sc/mtl5/include)
+include_directories(${CMAKE_BINARY_DIR}/build_mtl5/include)
 
 add_subdirectory(test)
 add_subdirectory(src)

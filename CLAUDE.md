@@ -40,7 +40,7 @@ cmake -DCMAKE_BUILD_TYPE=Debug ..
 
 **Dependencies (git submodules in `ext/`):**
 - `stillwater-sc/universal` — header-only number system library (posits, cfloats, integers, fixed-point, etc.)
-- `stillwater-sc/mtl4` — header-only matrix/linear algebra library
+- `stillwater-sc/mtl5` — C++20 header-only matrix/linear algebra library (no Boost dependency)
 - `google/googletest` — test framework
 - `google/abseil` — logging and utilities (C++20 required, optional via `MPADAO_ENABLE_ABSEIL`)
 
@@ -50,8 +50,8 @@ cmake -DCMAKE_BUILD_TYPE=Debug ..
   - `polynomial/` — polynomial evaluation across multiple number types (integers, fixpnts, areals, cfloats, posits, logs, unums)
   - `quadratic/` — catastrophic cancellation in quadratic formula (educational)
   - `logging/` — Abseil logging integration (only built when `MPADAO_ENABLE_ABSEIL=ON`)
-- `solvers/` — production-like algorithms (Gauss-Jordan matrix inversion using MTL4 + Boost multiprecision)
-- `mtl4ext/` — MTL4 extension headers (matrix generators, vector utils, norms)
+- `solvers/` — production-like algorithms (Gauss-Jordan matrix inversion using MTL5 + Boost multiprecision)
+- `mtlext/` — MTL5 extension headers (matrix generators, vector utils, norms)
 - `lib/version/` — static library providing `mpadao::get_semver()` version info; version synced from CMake via `configure_file`
 - `tools/semver/` — CLI tool for semantic version output
 
@@ -67,10 +67,10 @@ cmake -DCMAKE_BUILD_TYPE=Debug ..
 - **C++ Standard:** C++20 enforced (`CMAKE_CXX_STANDARD 20`)
 - **CMake minimum:** 3.22
 - **Compiler flags:** `-Wall -Wpedantic -Wno-narrowing -Wno-deprecated` (GCC/Clang); `-O3` only in Release builds; `/MP /Zc:__cplusplus` (MSVC)
-- **Namespaces:** `sw::universal` for number types, `mpadao::` for version management, `sw::hprblas` for MTL4 extensions
+- **Namespaces:** `sw::universal` for number types, `mpadao::` for version management, `sw::hprblas` for MTL5 extensions
 - **Install prefix:** project source root (in-place: `bin/`, `lib/`, `include/`)
 - **Template-heavy:** code uses extensive C++ templates for type-generic numeric algorithms
-- **Boost dependency:** optional but used by solvers (multiprecision)
+- **Boost dependency:** optional, used only by solvers (`boost::multiprecision::cpp_bin_float_quad`); MTL5 has no Boost dependency
 
 ## CI/CD
 

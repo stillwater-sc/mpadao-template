@@ -24,21 +24,20 @@ void printVector(std::ostream& ostr, const std::string& name, const Vector& v) {
 // printMatrix pretty prints a 2D dense matrix
 template<typename Matrix>
 void printMatrix(std::ostream& ostr, const std::string& name, const Matrix& M, int precision = 17, bool hex = false) {
-	using namespace mtl;
-	size_t d = num_rows(M);
+	size_t d = M.num_rows();
 	ostr << "Matrix: " << name << " is " << d << "x" << d << std::endl;
 	std::streamsize old_prec = ostr.precision();
 	ostr << std::setprecision(precision);
 	for (size_t i = 0; i<d; ++i) {
 		if (hex) {
 			std::cout << '[';
-			for (size_t j = 0; j < d; ++j) std::cout << " " << sw::universal::hex_format(M[i][j]);
+			for (size_t j = 0; j < d; ++j) std::cout << " " << sw::universal::hex_format(M(i, j));
 			std::cout << ']';
 		}
 		else {
-			for (size_t j = 0; j<d; ++j) std::cout << std::setw(20) << M[i][j] << " ";
+			for (size_t j = 0; j<d; ++j) std::cout << std::setw(20) << M(i, j) << " ";
 		}
-		
+
 		ostr << std::endl;
 	}
 	ostr << std::setprecision(old_prec);
@@ -47,8 +46,7 @@ void printMatrix(std::ostream& ostr, const std::string& name, const Matrix& M, i
 // printMatrix pretty prints a 2D dense matrix that is represented by an STL vector
 template<typename Ty>
 void printMatrix(std::ostream& ostr, const std::string& name, const std::vector<Ty>& M) {
-	using namespace mtl;
-	size_t d = size(M);
+	size_t d = M.size();
 	ostr << "Matrix: " << name << " is " << d << "x" << d << std::endl;
 	std::streamsize old_prec = ostr.precision();
 	ostr << std::setprecision(17);
@@ -67,8 +65,8 @@ void printSubMatrix(std::ostream& ostr, const std::string& name, const Matrix& A
 	std::streamsize old_prec = ostr.precision();
 	ostr << std::setprecision(17);
 
-	unsigned aRows = unsigned(mtl::mat::num_rows(A));
-	unsigned aCols = unsigned(mtl::mat::num_cols(A));
+	unsigned aRows = unsigned(A.num_rows());
+	unsigned aCols = unsigned(A.num_cols());
 
 	unsigned aRow = ai*blockHeight;
 	unsigned aCol = aj*blockWidth;
@@ -78,12 +76,12 @@ void printSubMatrix(std::ostream& ostr, const std::string& name, const Matrix& A
 
 	for (unsigned i = 0; i < maxRow; ++i) {
 		for (unsigned j = 0; j < maxCol; ++j) {
-			std::cout << std::setw(20) << A[aRow + i][aCol + j] << " ";
+			std::cout << std::setw(20) << A(aRow + i, aCol + j) << " ";
 		}
 		ostr << std::endl;
 	}
 	ostr << std::setprecision(old_prec);
 }
-	
+
 } // namespace hprblas
 } // namespace sw

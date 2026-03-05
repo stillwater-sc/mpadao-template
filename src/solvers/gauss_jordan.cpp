@@ -13,7 +13,7 @@
 #include <boost/multiprecision/cpp_bin_float.hpp>
 
 //#include <chrono>
-#include <boost/numeric/mtl/mtl.hpp>
+#include <mtl/mtl.hpp>
 #include <mtl_extensions.hpp>
 
 // arithmetic types under study
@@ -29,49 +29,51 @@ namespace sw {
 
 		template<typename Matrix>
 		Matrix GaussJordanInversion(const Matrix& A) {
-			using Scalar = typename mtl::Collection<Matrix>::value_type;
+			using Scalar = typename Matrix::value_type;
 
 			size_t m = A.num_rows();
 			size_t n = A.num_cols();
 			Matrix a(n, m), inv(m, n);
-			a = A; // you need a deep copy
-			inv = Scalar(1);
+			// deep copy A into a
+			for (size_t i = 0; i < m; ++i)
+				for (size_t j = 0; j < n; ++j)
+					a(i, j) = A(i, j);
+			// initialize inv to identity
+			for (size_t i = 0; i < m; ++i)
+				for (size_t j = 0; j < n; ++j)
+					inv(i, j) = (i == j) ? Scalar(1) : Scalar(0);
 
-			// Performing elementary operations 
+			// Performing elementary operations
 			for (unsigned i = 0; i < m; ++i) {
-				if (a[i][i] == 0) {
+				if (a(i, i) == 0) {
 					unsigned c = 1;
-					while (a[i + c][i] == 0 && (i + c) < n)	++c;
+					while (a(i + c, i) == 0 && (i + c) < n)	++c;
 					if ((i + c) == n) break;
 
 					for (unsigned k = 0; k < n; ++k) {
-						std::swap(a[i][k], a[i + c][k]);
-						std::swap(inv[i][k], inv[i + c][k]);
+						std::swap(a(i, k), a(i + c, k));
+						std::swap(inv(i, k), inv(i + c, k));
 					}
 				}
 				// transform to diagonal matrix
 				for (unsigned j = 0; j < m; j++) {
 					if (i != j) {
-						Scalar scale = a[j][i] / a[i][i];
+						Scalar scale = a(j, i) / a(i, i);
 						for (unsigned k = 0; k < n; ++k) {
-							a[j][k] = a[j][k] - a[i][k] * scale;
-							inv[j][k] = inv[j][k] - inv[i][k] * scale;
+							a(j, k) = a(j, k) - a(i, k) * scale;
+							inv(j, k) = inv(j, k) - inv(i, k) * scale;
 						}
 					}
-					//std::cout << i << "," << j << std::endl;
-					//sw::hprblas::printMatrix(std::cout, "a", a);
-					//sw::hprblas::printMatrix(std::cout, "inv", inv);
 				}
 			}
 			// transform to identity matrix
 			for (unsigned i = 0; i < m; ++i) {
-				Scalar normalize = a[i][i];
-				a[i][i] = Scalar(1);
+				Scalar normalize = a(i, i);
+				a(i, i) = Scalar(1);
 				for (unsigned j = 0; j < n; ++j) {
-					inv[i][j] /= normalize;
+					inv(i, j) /= normalize;
 				}
 			}
-			//printMatrix(std::cout, "conversion", a);
 			return inv;
 		}
 	} // namespace hprblas
@@ -80,7 +82,6 @@ namespace sw {
 template<typename Scalar>
 void GenerateNumericalAnalysisTestCase(const std::string& header, unsigned N, bool verbose = false) {
 	using namespace std;
-	using namespace mtl;
 	using namespace sw::universal;
 	using namespace sw::hprblas;
 
@@ -108,7 +109,8 @@ void GenerateNumericalAnalysisTestCase(const std::string& header, unsigned N, bo
 
 	// calculate the numerical error caused by the linear algebra computation
 	Vector e(N), eprime(N), eabsolute(N), erelative(N);
-	e = Scalar(1);
+	// initialize e to all ones
+	for (unsigned i = 0; i < N; ++i) e[i] = Scalar(1);
 	// TODO: it is not clear that for posits this would be a fused matrix-vector operation
 	eprime = I * e;
 	printVector(cout, "reference vector", e);
@@ -141,12 +143,11 @@ void GenerateNumericalAnalysisTestCase(const std::string& header, unsigned N, bo
 int main(int argc, char** argv)
 try {
 	using namespace std;
-	using namespace mtl;
 	using namespace sw::universal;
 
 	using quad = boost::multiprecision::cpp_bin_float_quad;
 
-	unsigned N = 5; 
+	unsigned N = 5;
 	bool Verbose = true;
 	GenerateNumericalAnalysisTestCase< quad >("IEEE quad precision", N, Verbose);
 	cout << "***********************************************************************************************\n";
@@ -154,15 +155,6 @@ try {
 	cout << "***********************************************************************************************\n";
 	GenerateNumericalAnalysisTestCase< float >("IEEE single precision", N, Verbose);
 	cout << "***********************************************************************************************\n";
-/*
-	GenerateNumericalAnalysisTestCase< posit<64, 3> >("posit<64,3>", N);
-	cout << endl;
-	GenerateNumericalAnalysisTestCase< double >("IEEE double precision", N);
-	cout << endl;
-	GenerateNumericalAnalysisTestCase< posit<128, 4> >("posit<128,4>", N);
-	cout << endl;
-	GenerateNumericalAnalysisTestCase< quad >("IEEE quad precision", N);
-*/
 
 	return EXIT_SUCCESS;
 }

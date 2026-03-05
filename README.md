@@ -79,7 +79,7 @@ For Windows, use the environment variable editor to do the same.
 
 ## Streamlining the Build
 
-To just build the projects in mpadao-template and ignore build targets in Universal and MTL4, use:
+To just build the projects in mpadao-template and ignore build targets in Universal and MTL5, use:
 
 ```zsh
 > cmake -DBUILD_DEMONSTRATION=OFF -DENABLE_TESTS=OFF ..

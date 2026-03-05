@@ -17,7 +17,7 @@
 #include <universal/verification/test_case.hpp>
 #include <universal/number/cfloat/cfloat.hpp>
 #include <blas/blas.hpp>
-#include <boost/numeric/mtl/mtl.hpp>
+#include <mtl/mtl.hpp>
 
 namespace sw::universal {
 	using xtndd = sw::universal::cfloat<80, 11, std::uint32_t, true, false, false>;

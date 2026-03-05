@@ -21,9 +21,8 @@ namespace sw {
 namespace hprblas {
 
 // L1-norm = sum of absolute value of each vector element (Manhattan Distance)
-template<typename Vector>
-typename mtl::traits::enable_if_vector<Vector, typename mtl::RealMagnitude<typename mtl::Collection<Vector>::value_type>::type>::type
-inline l1_norm(const Vector& v) {
+template<mtl::Vector Vector>
+inline auto l1_norm(const Vector& v) {
 	using Scalar = typename Vector::value_type;
 
 	Scalar l1 = Scalar(0);
@@ -34,7 +33,7 @@ inline l1_norm(const Vector& v) {
 }
 
 template<size_t nbits, size_t es>
-sw::universal::posit<nbits, es> l1_norm(const mtl::dense_vector<sw::universal::posit<nbits, es> > & v) {
+sw::universal::posit<nbits, es> l1_norm(const mtl::vec::dense_vector<sw::universal::posit<nbits, es> > & v) {
 	using Scalar = sw::universal::posit<nbits, es>;
 	sw::universal::quire<nbits, es, nbits - 1> q(0);
 	for (unsigned i = 0; i < size(v); ++i) {
@@ -46,12 +45,12 @@ sw::universal::posit<nbits, es> l1_norm(const mtl::dense_vector<sw::universal::p
 }
 
 template<size_t nbits, size_t es>
-sw::universal::posit<nbits, es> l1_norm(const mtl::dense2D<sw::universal::posit<nbits, es> > & M) {
+sw::universal::posit<nbits, es> l1_norm(const mtl::mat::dense2D<sw::universal::posit<nbits, es> > & M) {
 	using Scalar = sw::universal::posit<nbits, es>;
 	sw::universal::quire<nbits, es, nbits - 1> q(0);
 	for (unsigned i = 0; i < mtl::mat::num_rows(M); ++i) {
 		for (unsigned j = 0; j < mtl::mat::num_cols(M); ++j) {
-			q += abs(M[i][j]);
+			q += abs(M(i, j));
 		}
 	}
 	Scalar l1;
@@ -85,9 +84,8 @@ sw::universal::posit<nbits, es> l2_norm(const mtl::vec::dense_vector<sw::univers
 }
 
 // Linfinity-norm = max of the absolute value of each vector element
-template<typename Vector>
-typename mtl::traits::enable_if_vector<Vector, typename mtl::RealMagnitude<typename mtl::Collection<Vector>::value_type>::type>::type
-inline linf_norm(const Vector& v) {
+template<mtl::Vector Vector>
+inline auto linf_norm(const Vector& v) {
 	using Scalar = typename Vector::value_type;
 	Scalar linf = Scalar(0);
 	for (unsigned i = 0; i < size(v); ++i) {
@@ -97,14 +95,13 @@ inline linf_norm(const Vector& v) {
 }
 
 // Linfinity-norm = max of the absolute value of each matrix element
-template<typename Matrix>
-typename mtl::traits::enable_if_matrix<Matrix, typename mtl::RealMagnitude<typename mtl::Collection<Matrix>::value_type>::type>::type
-inline linf_norm(const Matrix& M) {
+template<mtl::Matrix Matrix>
+inline auto linf_norm(const Matrix& M) {
 	using Scalar = typename Matrix::value_type;
 	Scalar linf = Scalar(0);
 	for (unsigned i = 0; i < mtl::mat::num_rows(M); ++i) {
 		for (unsigned j = 0; j < mtl::mat::num_cols(M); ++j) {
-			linf = abs(M[i][j]) > linf ? abs(M[i][j]) : linf;
+			linf = abs(M(i, j)) > linf ? abs(M(i, j)) : linf;
 		}
 	}
 	return linf;
@@ -119,7 +116,7 @@ typename Matrix::value_type frobenius_norm(const Matrix& M) {
 	Scalar frobenius = Scalar(0);
 	for (int i = 0; i < N; ++i) {
 		for (int j = 0; j < N; ++j) {
-			frobenius += M[i][j] * M[i][j];
+			frobenius += M(i, j) * M(i, j);
 		}
 	}
 	return sqrt(frobenius);
@@ -127,13 +124,13 @@ typename Matrix::value_type frobenius_norm(const Matrix& M) {
 
 // Frobenius-norm = sqrt of the sum of absolute squares, posit specialized for dense matrices
 template<size_t nbits, size_t es>
-sw::universal::posit<nbits, es> frobenius_norm(const mtl::dense2D<sw::universal::posit<nbits, es> >& M) {
+sw::universal::posit<nbits, es> frobenius_norm(const mtl::mat::dense2D<sw::universal::posit<nbits, es> >& M) {
 	assert(mtl::mat::num_rows(M) == mtl::mat::num_cols(M)); // assuming squareness
 	int N = int(mtl::mat::num_cols(M));
 	sw::universal::quire<nbits, es, nbits - 1> q(0);
 	for (int i = 0; i < N; ++i) {
 		for (int j = 0; j < N; ++j) {
-			q += sw::universal::quire_mul(M[i][j], M[i][j]);
+			q += sw::universal::quire_mul(M(i, j), M(i, j));
 		}
 	}
 	using Scalar = sw::universal::posit<nbits, es>;

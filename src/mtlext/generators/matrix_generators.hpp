@@ -7,7 +7,7 @@
 #include <cstdint>
 #include <random>
 #include <algorithm>
-#include <boost/numeric/mtl/mtl.hpp>
+#include <mtl/mtl.hpp>
 #include <universal/number/posit/posit.hpp>
 #include <math/functions/binomial.hpp>
 
@@ -26,25 +26,15 @@ void uniform_rand(Matrix& A, double lowerbound = 0.0, double upperbound = 1.0)
 	// **uniformly distributed** on the closed interval [lowerbound, upperbound].
 	// (Note that the range is [inclusive, inclusive].)
 	std::uniform_real_distribution<double> dist{ lowerbound, upperbound };
-	// Pattern to generate pseudo-random number.
-	// double rnd_value = dist(engine);
 
-	typedef typename mtl::Collection<Matrix>::value_type    value_type;
-	typedef typename mtl::Collection<Matrix>::size_type     size_type;
+	using value_type = typename Matrix::value_type;
+	using size_type  = typename Matrix::size_type;
 
-	// inserters add to the elements, so we need to set the value to 0 before we begin
-	A = 0.0;
-	{ // extra block unfortunately needed for VS2013
-		// Create inserter for matrix m
-		mtl::mat::inserter<Matrix> ins(A, num_cols(A));
-
-		// generate and insert random values in A
-		for (size_type r = 0; r < num_rows(A); r++) {
-			for (size_type c = 0; c < num_cols(A); c++) {
-				ins[r][c] << value_type(dist(engine));
-			}
+	// generate and assign random values in A
+	for (size_type r = 0; r < A.num_rows(); r++) {
+		for (size_type c = 0; c < A.num_cols(); c++) {
+			A(r, c) = value_type(dist(engine));
 		}
-		// Destructor of ins sets final state of m
 	}
 }
 
@@ -68,16 +58,14 @@ void uniform_rand_sorted(Matrix& A, double lowerbound = 0.0, double upperbound =
 	// **uniformly distributed** on the closed interval [lowerbound, upperbound].
 	// (Note that the range is [inclusive, inclusive].)
 	std::uniform_real_distribution<double> dist{ lowerbound, upperbound };
-	// Pattern to generate pseudo-random number.
-	// double rnd_value = dist(engine);
 
-	typedef typename mtl::Collection<Matrix>::value_type    value_type;
-	typedef typename mtl::Collection<Matrix>::size_type     size_type;
+	using value_type = typename Matrix::value_type;
+	using size_type  = typename Matrix::size_type;
 
 	// generate a good set of randoms
-	std::vector<value_type> v(size(A));
-	for (size_type r = 0; r < num_rows(A); ++r) {
-		for (size_type c = 0; c < num_cols(A); ++c) {
+	std::vector<value_type> v(A.size());
+	for (size_type r = 0; r < A.num_rows(); ++r) {
+		for (size_type c = 0; c < A.num_cols(); ++c) {
 			v.push_back(value_type(dist(engine)));
 		}
 	}
@@ -86,40 +74,27 @@ void uniform_rand_sorted(Matrix& A, double lowerbound = 0.0, double upperbound =
 
 	// for each row minus the last column, calculate the sum of elements without rounding
 	sw::universal::posit<value_type::nbits, value_type::es> one(1), p;
-	for (size_type r = 0; r < num_rows(A); ++r) {
+	for (size_type r = 0; r < A.num_rows(); ++r) {
 		sw::universal::quire<value_type::nbits, value_type::es> q1, q2;
-		size_type lastElement = num_cols(A) - 1;
+		size_type lastElement = A.num_cols() - 1;
 		for (size_type c = 0; c < lastElement; ++c) {
-			q1 += sw::universal::quire_mul(one, v[r*num_cols(A) + c]);
+			q1 += sw::universal::quire_mul(one, v[r*A.num_cols() + c]);
 		}
 		// truncate the value in the quire
 		convert(q1.to_value(), p);
 		// calculate the difference between the truncated and the non-truncated quire values
 		q2 = p;
-//				std::cout << "q1 :" << q1 << std::endl;
-//				std::cout << "q2 :" << q2 << std::endl;
 		q2 -= q1;
 		convert(q2.to_value(), p);
-//				std::cout << "Residual is: " << double(p) << std::endl;
-//		if (p.iszero()) p = one;
-		v[r*num_cols(A) + lastElement] = p;
+		v[r*A.num_cols() + lastElement] = p;
 	}
 
-
-	// inserters add to the elements, so we need to set the value to 0 before we begin
-	A = 0;
-	{ // extra block unfortunately needed for VS2013
-		// Create inserter for matrix m
-		mtl::mat::inserter<Matrix> ins(A, num_cols(A));
-
-		// insert sorted values in A
-		size_type i = 0;
-		for (size_type r = 0; r < num_rows(A); r++) {
-			for (size_type c = 0; c < num_cols(A); c++) {
-				ins[r][c] << v[i++];
-			}
+	// assign sorted values in A
+	size_type i = 0;
+	for (size_type r = 0; r < A.num_rows(); r++) {
+		for (size_type c = 0; c < A.num_cols(); c++) {
+			A(r, c) = v[i++];
 		}
-		// Destructor of ins sets final state of m
 	}
 }
 
@@ -136,17 +111,15 @@ void uniform_rand_diagonally_dominant(Matrix& A, double lowerbound = 0.0, double
 	// **uniformly distributed** on the closed interval [lowerbound, upperbound].
 	// (Note that the range is [inclusive, inclusive].)
 	std::uniform_real_distribution<double> dist{ lowerbound, upperbound };
-	// Pattern to generate pseudo-random number.
-	// double rnd_value = dist(engine);
 
-	typedef typename mtl::Collection<Matrix>::value_type    value_type;
-	typedef typename mtl::Collection<Matrix>::size_type     size_type;
+	using value_type = typename Matrix::value_type;
+	using size_type  = typename Matrix::size_type;
 
-	// no need to null A as each element is assigned explicitely
-	for (size_type r = 0; r < num_rows(A); ++r) {
+	// no need to null A as each element is assigned explicitly
+	for (size_type r = 0; r < A.num_rows(); ++r) {
 		// generate a random vector of N
-		size_type N = num_cols(A);
-		mtl::dense_vector<value_type> v(N);
+		size_type N = A.num_cols();
+		mtl::vec::dense_vector<value_type> v(N);
 		for (size_type c = 0; c < N; ++c) {
 			v[c] = value_type(dist(engine));
 		}
@@ -156,7 +129,7 @@ void uniform_rand_diagonally_dominant(Matrix& A, double lowerbound = 0.0, double
 		}
 		value_type factor = v[r] / upperbound;
 		for (size_type c = 0; c < N; ++c) {
-			A[r][c] = v[c] / factor;
+			A(r, c) = v[c] / factor;
 		}
 	}
 }
@@ -164,9 +137,9 @@ void uniform_rand_diagonally_dominant(Matrix& A, double lowerbound = 0.0, double
 // Random Orthogonal Matrices
 
 /*
-Standard methods for generating random orthogonal matrices with Haar distribution 
+Standard methods for generating random orthogonal matrices with Haar distribution
 are based on the method of Heiberger (1978). With this method, an (n x n) matrix A is
-first generated with entries xij ~ Normal(0; 1). Then a QR factorization (X = QR) is computed. 
+first generated with entries xij ~ Normal(0; 1). Then a QR factorization (X = QR) is computed.
 This method provides a random Q with correct distribution.
 */
 template<typename Matrix>
@@ -179,34 +152,23 @@ void uniform_random_orthogonal_Heiberger(Matrix& Q) {
 	// **uniformly distributed** on the closed interval [lowerbound, upperbound].
 	// (Note that the range is [inclusive, inclusive].)
 	std::uniform_real_distribution<double> dist{ 0.0, 1.0 };
-	// Pattern to generate pseudo-random number.
-	// double rnd_value = dist(engine);
 
-	typedef typename mtl::Collection<Matrix>::value_type    value_type;
-	typedef typename mtl::Collection<Matrix>::size_type     size_type;
+	using value_type = typename Matrix::value_type;
+	using size_type  = typename Matrix::size_type;
 	Matrix A(mtl::mat::num_rows(Q), mtl::mat::num_cols(Q));
-	Matrix R(mtl::mat::num_rows(Q), mtl::mat::num_cols(Q));
 
-	// fill X with elements from Normal(0,1)
-	// inserters add to the elements, so we need to set the value to 0 before we begin
-	A = 0.0;
-	{ // extra block unfortunately needed for VS2013
-		// Create inserter for matrix A
-		mtl::mat::inserter<Matrix> ins(A, num_cols(A));
-
-		// insert random values in A
-		for (size_type r = 0; r < num_rows(A); r++) {
-			for (size_type c = 0; c < num_cols(A); c++) {
-				ins[r][c] << value_type(dist(engine));
-			}
+	// fill A with elements from Normal(0,1)
+	for (size_type r = 0; r < A.num_rows(); r++) {
+		for (size_type c = 0; c < A.num_cols(); c++) {
+			A(r, c) = value_type(dist(engine));
 		}
-		// Destructor of ins sets final state of A
 	}
-	// QR method to generate orthonormal matrix Q
-	mtl::mat::qr(A, Q, R);
+	// QR factorization to generate orthonormal matrix Q
+	mtl::vec::dense_vector<value_type> tau;
+	mtl::qr_factor(A, tau);
+	Q = mtl::qr_extract_Q(A, tau);
 	std::cout << A << std::endl;
 	std::cout << Q << std::endl;
-	std::cout << R << std::endl;
 }
 
 /*
@@ -214,36 +176,36 @@ C.3: Generating a Random Matrix with Specified Eigenvalues
 Generate random orthogonal matrix G. W. Stewart (1980).
 
 start RandOrthog(n);
-A = I(n); // identity matrix 
+A = I(n); // identity matrix
 d = j(n, 1, 0);
-d[n] = sgn(RndNormal(1, 1)); // +/- 1 
+d[n] = sgn(RndNormal(1, 1)); // +/- 1
 do k = n - 1 to 1 by - 1;
-	// generate random Householder transformation 
-	x = RndNormal(n - k + 1, 1); // column vector from N(0,1) 
-	s = sqrt(x[##]); // norm(x) 
+	// generate random Householder transformation
+	x = RndNormal(n - k + 1, 1); // column vector from N(0,1)
+	s = sqrt(x[##]); // norm(x)
 	sgn = sgn(x[1]);
 	s = sgn*s;
 	d[k] = -sgn;
 	x[1] = x[1] + s;
 	beta = s*x[1];
-	// apply the Householder transformation to A 
+	// apply the Householder transformation to A
 	y = x`*A[k:n, ];
 	A[k:n, ] = A[k:n, ] - x*(y / beta);
 end;
-A = d # A; // change signs of i_th row when d[i]=-1 
+A = d # A; // change signs of i_th row when d[i]=-1
 return(A);
 finish;
 
-// helper functions 
+// helper functions
 // return matrix of same size as A with
 // m[i,j]= {  1 if A[i,j]>=0
 //         { -1 if A[i,j]< 0
-// Similar to the SIGN function, except SIGN(0)=0 
+// Similar to the SIGN function, except SIGN(0)=0
 start sgn(A);
 	return(choose(A >= 0, 1, -1));
 finish;
 
-// return (r x c) matrix of standard normal variates 
+// return (r x c) matrix of standard normal variates
 start RndNormal(r, c);
 	x = j(r, c);
 	call randgen(x, "Normal");
@@ -261,54 +223,39 @@ void uniform_rand_orthogonal(Matrix& A) {
 }
 
 //
-// fill a dense upper-triangular matrix with elements: [i][j] = 0.5 + (1 + j - i)*0.5
+// fill a dense upper-triangular matrix with elements: (i,j) = 0.5 + (1 + j - i)*0.5
 template <typename Matrix>
 void fill_U(Matrix& A, double lowerbound = 0.0, double upperbound = 1.0)
 {
-	using namespace mtl;
-	typedef typename Collection<Matrix>::value_type    value_type;
-	typedef typename Collection<Matrix>::size_type     size_type;
+	using value_type = typename Matrix::value_type;
+	using size_type  = typename Matrix::size_type;
 
-	// inserters add to the elements, so we need to set the value to 0 before we begin
-	A = 0.0;
-	{ // extra block unfortunately needed for VS2013
-		// Create inserter for matrix m
-		mat::inserter<Matrix> ins(A, num_cols(A));
+	// set all elements to zero first
+	mtl::set_to_zero(A);
 
-		// generate and insert random values in A
-		for (size_type r = 0; r < num_rows(A); r++) {
-			for (size_type c = r; c < num_cols(A); c++) {
-				ins[r][c] << value_type(0.5) + value_type(1 + c - r)*value_type(0.5);
-				ins[r][c] << value_type(1.0);
-			}
+	// fill upper-triangular elements
+	for (size_type r = 0; r < A.num_rows(); r++) {
+		for (size_type c = r; c < A.num_cols(); c++) {
+			A(r, c) = value_type(0.5) + value_type(1 + c - r)*value_type(0.5);
 		}
-		// Destructor of ins sets final state of m
 	}
 }
 
-// fill a dense lower-triangular matrix with elements: [i][j] = 0.5 + (1 + i - j)*0.5
+// fill a dense lower-triangular matrix with elements: (i,j) = 0.5 + (1 + i - j)*0.5
 template <typename Matrix>
 void fill_L(Matrix& A, double lowerbound = 0.0, double upperbound = 1.0)
 {
-	using namespace mtl;
-	typedef typename Collection<Matrix>::value_type    value_type;
-	typedef typename Collection<Matrix>::size_type     size_type;
+	using value_type = typename Matrix::value_type;
+	using size_type  = typename Matrix::size_type;
 
-	// inserters add to the elements, so we need to set the value to 0 before we begin
-	A = 0.0;
-	{ // extra block unfortunately needed for VS2013
-		// Create inserter for matrix m
-		mat::inserter<Matrix> ins(A, num_cols(A));
+	// set all elements to zero first
+	mtl::set_to_zero(A);
 
-		// generate and insert random values in A
-		for (size_type r = 0; r < num_rows(A); r++) {
-			for (size_type c = 0; c <= r; c++) {
-				ins[r][c] << value_type(0.5) + value_type(1 + r - c)*value_type(0.5);
-				ins[r][c] << value_type(1.0);
-
-			}
+	// fill lower-triangular elements
+	for (size_type r = 0; r < A.num_rows(); r++) {
+		for (size_type c = 0; c <= r; c++) {
+			A(r, c) = value_type(0.5) + value_type(1 + r - c)*value_type(0.5);
 		}
-		// Destructor of ins sets final state of m
 	}
 }
 
@@ -348,9 +295,9 @@ size_t GenerateHilbertMatrix(mtl::mat::dense2D<Scalar>& M, bool bScale = true) {
 	size_t N = M.num_rows();
 	size_t lcm = HilbertScalingFactor(N); // always calculate the Least Common Multiplier
 	Scalar scale = bScale ? Scalar(lcm) : Scalar(1);
-	for (int i = 1; i <= N; ++i) {
-		for (int j = 1; j <= N; ++j) {
-			M[i - 1][j - 1] = scale / Scalar(i + j - 1);
+	for (int i = 1; i <= static_cast<int>(N); ++i) {
+		for (int j = 1; j <= static_cast<int>(N); ++j) {
+			M(i - 1, j - 1) = scale / Scalar(i + j - 1);
 		}
 	}
 	return lcm;
@@ -360,34 +307,26 @@ template<typename Scalar>
 void GenerateHilbertMatrixInverse(mtl::mat::dense2D<Scalar>& m, Scalar scale = Scalar(1.0)) {
 	assert(m.num_rows() == m.num_cols());
 	size_t N = m.num_rows();
-	for (int i = 1; i <= N; ++i) {
-		for (int j = 1; j <= N; ++j) {
+	for (int i = 1; i <= static_cast<int>(N); ++i) {
+		for (int j = 1; j <= static_cast<int>(N); ++j) {
 			Scalar sign = ((i + j) % 2) ? Scalar(-1) : Scalar(1);
 			Scalar factor1 = Scalar(i + j - 1);
 			Scalar factor2 = Scalar(sw::math::function::binomial<uint64_t>(N + i - 1, N - j));
 			Scalar factor3 = Scalar(sw::math::function::binomial<uint64_t>(N + j - 1, N - i));
 			Scalar factor4 = Scalar(sw::math::function::binomial<uint64_t>(i + j - 2, i - 1));
-			m[i - 1][j - 1] = Scalar(sign * factor1 * factor2 * factor3 * factor4 * factor4);
-			/* for tracing dynamic range failures
-			std::cout << "element " << i << "," << j << std::endl;
-			std::cout << "sign    " << sign << std::endl;
-			std::cout << "factor1 " << factor1 << std::endl;
-			std::cout << "factor2 " << factor2 << std::endl;
-			std::cout << "factor3 " << factor3 << std::endl;
-			std::cout << "factor4 " << factor4 << std::endl;
-			*/
+			m(i - 1, j - 1) = Scalar(sign * factor1 * factor2 * factor3 * factor4 * factor4);
 		}
 	}
 }
 
-// isEqual compares to matrices
+// isEqual compares two matrices
 template<typename Matrix>
 bool isEqual(const Matrix& lhs, const Matrix& rhs) {
 	size_t r = lhs.num_rows();
 	size_t c = lhs.num_cols();
 	for (size_t i = 0; i < r; ++i) {
 		for (size_t j = 0; j < c; ++j) {
-			if (lhs[i][j] != rhs[i][j]) return false;
+			if (lhs(i, j) != rhs(i, j)) return false;
 		}
 	}
 	return true;

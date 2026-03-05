@@ -3,8 +3,8 @@ project(solvers CXX)
 
 # Universal is a C++ header-only library, so we do not need to build anything
 include_directories(${MPADAO_ROOT_DIR}/ext/stillwater-sc/universal/include/sw)
-# MTL4 is a C++ header-only library, so no need to build anything either
-include_directories(${MPADAO_ROOT_DIR}/ext/stillwater-sc/mtl4)
+# MTL5 is a C++ header-only library, so no need to build anything either
+include_directories(${MPADAO_ROOT_DIR}/ext/stillwater-sc/mtl5/include)
 
 add_executable(matinverse gauss_jordan.cpp)
 set(folder "Solvers")
