@@ -10,3 +10,6 @@ add_subdirectory(precision)
 # example to benchmark performance
 add_subdirectory(performance)
 
+# example to benchmark convergence rates of pi formulas
+add_subdirectory(convergence)
+

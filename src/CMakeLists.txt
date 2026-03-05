@@ -24,6 +24,11 @@ add_subdirectory(apps/mixed-precision/constants)
 # starter for projects that use the Universal Number System library adaptive precision facilities
 add_subdirectory(apps/high-precision/digits_of_pi)
 
+# Chudnovsky pi computation using binary splitting
+add_subdirectory(apps/high-precision/chudnovsky)
+
+# Karatsuba multiplication demonstration
+add_subdirectory(apps/high-precision/karatsuba)
 
 
 # Abseil logging integration (optional)
