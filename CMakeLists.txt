@@ -49,14 +49,18 @@ set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
 #     Set BOOST_ROOT as a CMake variable (-DBOOST_ROOT=...) or environment variable.
 #
 # CMake 4.0 removed the built-in FindBoost module (CMP0167).
+# CMP0144: find_package honors upper-case <PACKAGENAME>_ROOT variables (CMake 3.27+).
 if(POLICY CMP0167)
 	cmake_policy(SET CMP0167 NEW)
+endif()
+if(POLICY CMP0144)
+	cmake_policy(SET CMP0144 NEW)
 endif()
 set(MPADAO_BOOST_FOUND FALSE)
 
 # Expose BOOST_ROOT in the CMake GUI so users can browse to their Boost tree.
 # The CACHE variable persists across configures and won't be cleared by find_package.
-set(BOOST_ROOT "" CACHE PATH "Path to Boost source/install tree (e.g. C:/local/boost_1_86_0)")
+set(BOOST_ROOT "${BOOST_ROOT}" CACHE PATH "Path to Boost source/install tree (e.g. C:/local/boost_1_86_0)")
 
 # First, try config-mode (works with installed Boost >= 1.70)
 find_package(Boost QUIET CONFIG)
