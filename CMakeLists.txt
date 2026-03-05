@@ -41,10 +41,17 @@ endif()
 set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
 
 # Boost is only needed for solvers (boost::multiprecision::cpp_bin_float_quad).
-# CMake 4.0 removed the built-in FindBoost module (CMP0167). We support both:
-#  1. Installed Boost with CMake config files (find_package in CONFIG mode)
-#  2. Source-only Boost tree via BOOST_ROOT (header-only use, no build needed)
-cmake_policy(SET CMP0167 NEW)  # suppress FindBoost removal warning on CMake 4.x
+# We only use header-only Boost libraries, so no built Boost is required.
+#
+# Detection strategy:
+#  1. Try find_package in CONFIG mode (installed Boost >= 1.70 with CMake config)
+#  2. Fall back to BOOST_ROOT pointing to a Boost source/include tree
+#     Set BOOST_ROOT as a CMake variable (-DBOOST_ROOT=...) or environment variable.
+#
+# CMake 4.0 removed the built-in FindBoost module (CMP0167).
+if(POLICY CMP0167)
+	cmake_policy(SET CMP0167 NEW)
+endif()
 set(MPADAO_BOOST_FOUND FALSE)
 
 # First, try config-mode (works with installed Boost >= 1.70)
@@ -53,18 +60,32 @@ if(Boost_FOUND)
 	set(MPADAO_BOOST_FOUND TRUE)
 	message(STATUS "Boost found via CMake config: ${Boost_INCLUDE_DIRS}")
 	include_directories(${Boost_INCLUDE_DIRS})
-elseif(DEFINED BOOST_ROOT)
-	# Fall back to source tree: BOOST_ROOT should point to the top-level
-	# directory containing the boost/ subdirectory (e.g. boost_1_86_0/)
-	if(EXISTS "${BOOST_ROOT}/boost/version.hpp")
-		set(MPADAO_BOOST_FOUND TRUE)
-		message(STATUS "Boost found via BOOST_ROOT: ${BOOST_ROOT}")
-		include_directories(${BOOST_ROOT})
-	else()
-		message(STATUS "BOOST_ROOT set to ${BOOST_ROOT} but boost/version.hpp not found there")
-	endif()
 else()
-	message(STATUS "Boost not found: set BOOST_ROOT to your Boost source tree to enable solvers")
+	# Collect candidate paths from CMake variable, environment variable, and GUI cache
+	set(_boost_candidates)
+	if(DEFINED BOOST_ROOT)
+		list(APPEND _boost_candidates "${BOOST_ROOT}")
+	endif()
+	if(DEFINED ENV{BOOST_ROOT})
+		list(APPEND _boost_candidates "$ENV{BOOST_ROOT}")
+	endif()
+	if(DEFINED Boost_INCLUDE_DIR)
+		list(APPEND _boost_candidates "${Boost_INCLUDE_DIR}")
+	endif()
+
+	foreach(_candidate IN LISTS _boost_candidates)
+		if(EXISTS "${_candidate}/boost/version.hpp")
+			set(MPADAO_BOOST_FOUND TRUE)
+			message(STATUS "Boost found via source tree: ${_candidate}")
+			include_directories("${_candidate}")
+			break()
+		endif()
+	endforeach()
+
+	if(NOT MPADAO_BOOST_FOUND)
+		message(STATUS "Boost not found: set BOOST_ROOT to your Boost source tree to enable solvers")
+		message(STATUS "  cmake -DBOOST_ROOT=/path/to/boost_1_86_0 ..")
+	endif()
 endif()
 
 set(MPADAO_ROOT_DIR ${PROJECT_SOURCE_DIR})
