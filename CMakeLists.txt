@@ -40,11 +40,32 @@ endif()
 
 set(CMAKE_INSTALL_PREFIX ${PROJECT_SOURCE_DIR})
 
-find_package(Boost)
+# Boost is only needed for solvers (boost::multiprecision::cpp_bin_float_quad).
+# CMake 4.0 removed the built-in FindBoost module (CMP0167). We support both:
+#  1. Installed Boost with CMake config files (find_package in CONFIG mode)
+#  2. Source-only Boost tree via BOOST_ROOT (header-only use, no build needed)
+cmake_policy(SET CMP0167 NEW)  # suppress FindBoost removal warning on CMake 4.x
+set(MPADAO_BOOST_FOUND FALSE)
+
+# First, try config-mode (works with installed Boost >= 1.70)
+find_package(Boost QUIET CONFIG)
 if(Boost_FOUND)
-	message(STATUS "Boost_INCLUDE_DIR" ${Boost_INCLUDE_DIR})
-	include_directories(${Boost_INCLUDE_DIR})
-endif(Boost_FOUND)
+	set(MPADAO_BOOST_FOUND TRUE)
+	message(STATUS "Boost found via CMake config: ${Boost_INCLUDE_DIRS}")
+	include_directories(${Boost_INCLUDE_DIRS})
+elseif(DEFINED BOOST_ROOT)
+	# Fall back to source tree: BOOST_ROOT should point to the top-level
+	# directory containing the boost/ subdirectory (e.g. boost_1_86_0/)
+	if(EXISTS "${BOOST_ROOT}/boost/version.hpp")
+		set(MPADAO_BOOST_FOUND TRUE)
+		message(STATUS "Boost found via BOOST_ROOT: ${BOOST_ROOT}")
+		include_directories(${BOOST_ROOT})
+	else()
+		message(STATUS "BOOST_ROOT set to ${BOOST_ROOT} but boost/version.hpp not found there")
+	endif()
+else()
+	message(STATUS "Boost not found: set BOOST_ROOT to your Boost source tree to enable solvers")
+endif()
 
 set(MPADAO_ROOT_DIR ${PROJECT_SOURCE_DIR})
 set(MPADAO_INSTALL_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include)
