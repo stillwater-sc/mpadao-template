@@ -29,6 +29,34 @@ After that, the repo is ready to be build:
 
 This will build the libraries, the CLI command projects, and the tests in `test/mpadao_tests`.
 
+## Boost dependency (optional)
+
+The solver examples use `boost::multiprecision::cpp_bin_float_quad` as a reference type for comparing numerical accuracy against Universal number types. Boost is optional — without it, the solvers are simply skipped.
+
+**Linux (Ubuntu/Debian):**
+
+```bash
+sudo apt install libboost-dev
+```
+
+**macOS (Homebrew):**
+
+```bash
+brew install boost
+```
+
+**Windows:**
+
+Download a Boost release from [boost.org](https://www.boost.org/users/download/) and extract it. Since we only use Boost's header-only multiprecision library, no build step is required. Point CMake to the source tree:
+
+```bash
+cmake -DBOOST_ROOT=C:/local/boost_1_86_0 ..
+```
+
+CMake will automatically detect installed Boost on Linux and macOS. If Boost is not found, everything except the solvers directory will build normally.
+
+## Development container
+
 When using VSCode, the repository contains a devcontainer spec in the directory $MPADAO_ROOT/.devcontainer.
 
 ![VS code environment](img/vscode-devcontainer.png)
