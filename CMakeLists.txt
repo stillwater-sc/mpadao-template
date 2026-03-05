@@ -54,6 +54,10 @@ if(POLICY CMP0167)
 endif()
 set(MPADAO_BOOST_FOUND FALSE)
 
+# Expose BOOST_ROOT in the CMake GUI so users can browse to their Boost tree.
+# The CACHE variable persists across configures and won't be cleared by find_package.
+set(BOOST_ROOT "" CACHE PATH "Path to Boost source/install tree (e.g. C:/local/boost_1_86_0)")
+
 # First, try config-mode (works with installed Boost >= 1.70)
 find_package(Boost QUIET CONFIG)
 if(Boost_FOUND)
@@ -63,14 +67,11 @@ if(Boost_FOUND)
 else()
 	# Collect candidate paths from CMake variable, environment variable, and GUI cache
 	set(_boost_candidates)
-	if(DEFINED BOOST_ROOT)
+	if(BOOST_ROOT)
 		list(APPEND _boost_candidates "${BOOST_ROOT}")
 	endif()
 	if(DEFINED ENV{BOOST_ROOT})
 		list(APPEND _boost_candidates "$ENV{BOOST_ROOT}")
-	endif()
-	if(DEFINED Boost_INCLUDE_DIR)
-		list(APPEND _boost_candidates "${Boost_INCLUDE_DIR}")
 	endif()
 
 	foreach(_candidate IN LISTS _boost_candidates)
