@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.22)
-set(app_name example)
+set(app_name digits_of_pi)
 project(${app_name} CXX)
 
 # Universal is a C++ header-only library, so we do not need to build anything
@@ -11,7 +11,7 @@ set(SOURCE_FILES
 )
 
 add_executable(${app_name} ${SOURCE_FILES})
-set(folder "Applications/Mixed-Precision")
+set(folder "Applications/High-Precision")
 set_target_properties(${app_name} PROPERTIES FOLDER ${folder})
 
 # add libraries if you need them
