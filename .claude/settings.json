@@ -1,0 +1,25 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path // empty' | grep -q '/ext/' && { echo 'BLOCKED: Do not modify submodule files in ext/' >&2; exit 2; } || exit 0"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "notify-send 'Claude Code' \"$(jq -r '.message // \"Task complete\"')\" 2>/dev/null || true"
+          }
+        ]
+      }
+    ]
+  }
+}

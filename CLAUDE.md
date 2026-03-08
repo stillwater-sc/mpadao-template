@@ -75,10 +75,44 @@ cmake -DCMAKE_BUILD_TYPE=Debug ..
 ## CI/CD
 
 GitHub Actions (`.github/workflows/cmake.yml`) builds on:
-- Windows 2022 (MSVC), Ubuntu 22.04 (GCC), macOS 13 (Clang)
+- Windows 2022 (MSVC), Ubuntu 22.04 (GCC), macOS 15 (Clang)
 - Auto-installs Boost 1.81.0
 - Runs `ctest` after build
 
 ## Docker Development
 
 Single development container (`docker/Dockerfile`) based on Ubuntu 24.04 with GCC 14 and Clang 18. Build with `docker build -t stillwater/mpadao:latest docker/`. GCC 14 is the default; switch to Clang via `CC=clang-18 CXX=clang++-18 cmake ..`. DevContainer configured for `stillwater/mpadao:latest`.
+
+## Common Development Tasks
+
+When adding a new application:
+1. Create directory under src/apps/<category>/<name>/
+2. Follow the CMakeLists.txt pattern from digits_of_pi (see scaffold-app skill)
+3. Add add_subdirectory() to src/CMakeLists.txt in the appropriate section
+4. Build and verify before committing
+
+When adding a new benchmark:
+1. Create directory under benchmark/<name>/
+2. Follow the CMakeLists.txt pattern from benchmark/accuracy/
+3. Add add_subdirectory() to benchmark/CMakeLists.txt
+
+## Branch Strategy
+
+- `dev` -> `integration` -> `main` (three-tier)
+- Feature branches from `dev`
+- PRs target `integration` or `main`
+- CI triggers on push to dev/integration/main and PRs to integration/main
+
+## Testing Expectations
+
+- All new apps should produce verifiable output (reference values, assertions)
+- Benchmarks should include hardcoded reference data for validation
+- Run ctest before committing to verify no regressions
+
+## Known Constraints
+
+- ereal<19> arithmetic is very slow (~minutes for 300-digit computations).
+  Use ereal<8> (127 digits) for interactive demos.
+- CI does not install Boost — solvers/ is not exercised in CI.
+- Version is managed centrally in root CMakeLists.txt
+  (MPADAO_MAJOR/MINOR/PATCH) and propagated via configure_file.

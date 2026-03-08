@@ -50,3 +50,8 @@ include/*
 lib/*
 bin/*
 test/testrunner
+
+# Claude Code personal/machine-local files
+.claude/settings.local.json
+.claude/agent-memory/
+.claude/plans/
