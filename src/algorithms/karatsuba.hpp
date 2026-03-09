@@ -111,6 +111,11 @@ inline BigNum slice(const BigNum& x, size_t lo, size_t hi) {
 }
 
 // Shift left by n blocks (multiply by base^n)
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Warray-bounds"
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
 inline BigNum shift_blocks(const BigNum& x, size_t n) {
 	if (x.size() == 1 && x.blocks[0] == 0) return x;
 	BigNum result(x.size() + n, 0);
@@ -119,6 +124,9 @@ inline BigNum shift_blocks(const BigNum& x, size_t n) {
 	}
 	return result;
 }
+#if defined(__GNUC__) && !defined(__clang__)
+#pragma GCC diagnostic pop
+#endif
 
 // Compare: returns -1, 0, or 1
 inline int compare(const BigNum& a, const BigNum& b) {
