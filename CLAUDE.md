@@ -96,6 +96,20 @@ When adding a new benchmark:
 2. Follow the CMakeLists.txt pattern from benchmark/accuracy/
 3. Add add_subdirectory() to benchmark/CMakeLists.txt
 
+## Development Plans
+
+Project plans live in `.claude/plans/` and are checked into git for team visibility.
+
+**Naming:** Use descriptive kebab-case names (e.g., `karatsuba-multiplication.md`, `mtl4-to-mtl5-migration.md`). Never commit auto-generated slug names.
+
+**Lifecycle:**
+1. Develop the plan using `/plan` (auto-saved to `~/.claude/plans/` with a random name)
+2. When ready to share, copy it to `.claude/plans/` with a human-readable name
+3. Commit it alongside the code
+4. Delete from `.claude/plans/` once the work is merged to `main`
+
+**Format:** Each plan should include `## Context`, `## Changes`, `## Execution Order`, and `## Verification` sections.
+
 ## Branch Strategy
 
 - `dev` -> `integration` -> `main` (three-tier)

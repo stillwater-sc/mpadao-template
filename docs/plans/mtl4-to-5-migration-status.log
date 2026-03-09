@@ -1,0 +1,48 @@
+ All targets build successfully. Now run the tests:
+
+● Bash(ctest 2>&1)
+  ⎿  Test project /home/stillwater/dev/stillwater/clones/mpadao-template/build
+         Start 1: mpadao_tests
+     1/3 Test #1: mpadao_tests .....................   Passed    0.00 sec
+     … +8 lines (ctrl+o to expand)
+
+● All 3 tests pass. Let me also verify the solvers binary runs correctly:
+
+● Bash(./src/solvers/matinverse 2>&1 | head -30)
+  ⎿  >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+     IEEE quad precision
+     Matrix: Hilbert matrix order 5 is 5x5
+     … +17 lines (ctrl+o to expand)
+
+● The solver runs correctly producing the expected Hilbert matrix inversion results.
+
+● The MTL4 → MTL5 migration is complete. Here's a summary of all changes:
+
+  Submodule swap:
+  - Removed ext/stillwater-sc/mtl4, added ext/stillwater-sc/mtl5
+  - Updated .gitmodules
+
+  Directory rename:
+  - src/mtl4ext/ → src/mtlext/
+
+  CMakeLists.txt updates (4 files):
+  - Root: MTL5 submodule (unconditional, no Boost needed), disabled MTL5 tests/examples, added MTL5 include paths (source + generated)
+  - src/solvers/: include path → mtl5/include
+  - benchmark/performance/: include path → mtl5/include
+  - benchmark/: removed if(Boost_FOUND) guard around performance benchmark
+
+  Source file API migration (5 files):
+  - #include <boost/numeric/mtl/mtl.hpp> → #include <mtl/mtl.hpp>
+  - mtl::Collection<M>::value_type → typename M::value_type (Collection is now a concept)
+  - mtl::traits::enable_if_vector/matrix → requires mtl::Vector<V> / requires mtl::Matrix<M>
+  - M[i][j] → M(i,j) (dense2D uses operator() in MTL5)
+  - Inserter pattern → direct A(r,c) = value assignment (inserter is sparse-only in MTL5)
+  - A = 0.0 → mtl::set_to_zero(A) or explicit loops
+  - inv = Scalar(1) → explicit identity loop
+  - mtl::mat::qr(A, Q, R) → mtl::qr_factor(A, tau) + mtl::qr_extract_Q(A, tau)
+
+  MTL5 fix (identity.hpp, mtl_fwd.hpp):
+  - Removed static constexpr from identity values to support non-literal types like boost::multiprecision::cpp_bin_float_quad
+
+  Documentation: Updated CLAUDE.md and README.md references from mtl4 to mtl5.
+
