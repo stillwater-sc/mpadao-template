@@ -75,17 +75,17 @@ void uniform_rand_sorted(Matrix& A, double lowerbound = 0.0, double upperbound =
 	// for each row minus the last column, calculate the sum of elements without rounding
 	sw::universal::posit<value_type::nbits, value_type::es> one(1), p;
 	for (size_type r = 0; r < A.num_rows(); ++r) {
-		sw::universal::quire<value_type::nbits, value_type::es> q1, q2;
+		sw::universal::quire<value_type> q1, q2;
 		size_type lastElement = A.num_cols() - 1;
 		for (size_type c = 0; c < lastElement; ++c) {
 			q1 += sw::universal::quire_mul(one, v[r*A.num_cols() + c]);
 		}
 		// truncate the value in the quire
-		convert(q1.to_value(), p);
+		p = sw::universal::quire_resolve(q1);
 		// calculate the difference between the truncated and the non-truncated quire values
 		q2 = p;
 		q2 -= q1;
-		convert(q2.to_value(), p);
+		p = sw::universal::quire_resolve(q2);
 		v[r*A.num_cols() + lastElement] = p;
 	}
 
