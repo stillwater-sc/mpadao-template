@@ -121,11 +121,76 @@ To enable the Abseil logging example, add:
 
 ## Updating the submodules
 
-If you want to update the submodules to the latest version of the upstream repos, issue this command:
+The parent repo pins each submodule to a **specific commit SHA**. "Updating" means deliberately
+choosing a new SHA (usually a release tag) and re-pinning the parent to it. Do **not** use
+`git submodule update --remote --merge` — that asks Git to merge the upstream branch into the
+submodule's detached `HEAD`, and on long-pinned dependencies (e.g. abseil) it produces hundreds
+of merge conflicts.
+
+The safe workflow is **query → act → verify**, done one submodule at a time.
+
+### 1. Query: what is checked out, what is pinned, what is available upstream?
 
 ```bash
-> git submodule update --remote --merge
+# Parent repo: are working trees clean, and do submodule SHAs match the pin?
+> git status
+> git submodule status
+#   <SHA> <path> (<describe>)
+#   A leading '+' means the submodule's HEAD differs from the pinned SHA.
+#   A leading '-' means the submodule isn't initialized.
+#   No prefix means clean and matching the pin.
+
+# Inside the submodule: what tags are available upstream?
+> cd ext/google/abseil
+> git fetch --tags
+> git tag --sort=-v:refname | head -10
 ```
+
+Decide on a target — prefer a release tag (e.g. `20260107.1`) over a moving branch like `main`.
+Tags ending in `.rcN` are release candidates; skip them for production pins.
+
+### 2. Act: check out the target tag and stage the new SHA in the parent
+
+```bash
+# Still inside the submodule
+> git checkout 20260107.1     # detached HEAD at the chosen tag
+> cd ../../..                 # back to the parent repo
+
+# Stage and commit the new submodule SHA in the parent
+> git add ext/google/abseil
+> git commit -m "Bump abseil submodule to LTS 20260107.1"
+```
+
+### 3. Verify: confirm the new state, then build and test
+
+```bash
+> git submodule status
+# Expect: no '+' prefix, the SHA matches the tag you chose, and the describe
+# string shows the tag name.
+
+# Re-check the build with the new submodule
+> mkdir build-verify && cd build-verify
+> cmake -DMPADAO_ENABLE_ABSEIL=ON ..    # enable affected features
+> make -j$(nproc) && ctest
+```
+
+If the build or tests fail, the upstream change broke something — either pin to an older tag,
+or fix the call sites in this repo as a separate commit.
+
+### Recovering from a botched update
+
+If you have already run `git submodule update --remote --merge` and are sitting on a conflicted
+merge inside a submodule:
+
+```bash
+> cd ext/google/<submodule>
+> git merge --abort
+> cd -
+> git submodule update --init --recursive   # resets every submodule to the pinned SHA
+```
+
+`git submodule update` (without `--remote`) is the "sync to what the parent repo pins" command
+and is always safe — it only prints lines for submodules that actually change.
 
 
 # Project structure
