@@ -75,7 +75,7 @@ void uniform_rand_sorted(Matrix& A, double lowerbound = 0.0, double upperbound =
 	// for each row minus the last column, calculate the sum of elements without rounding
 	sw::universal::posit<value_type::nbits, value_type::es> one(1), p;
 	for (size_type r = 0; r < A.num_rows(); ++r) {
-		sw::universal::quire<value_type> q1, q2;
+		sw::universal::quire<value_type> q1(0), q2;
 		size_type lastElement = A.num_cols() - 1;
 		for (size_type c = 0; c < lastElement; ++c) {
 			q1 += sw::universal::quire_mul(one, v[r*A.num_cols() + c]);
