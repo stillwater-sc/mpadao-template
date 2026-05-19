@@ -167,6 +167,15 @@ Tags ending in `.rcN` are release candidates; skip them for production pins.
 > git submodule status
 # Expect: no '+' prefix, the SHA matches the tag you chose, and the describe
 # string shows the tag name.
+#
+# Gotcha: `git submodule status` calls plain `git describe` under the hood,
+# which IGNORES lightweight (non-annotated) tags. googletest tags releases
+# as lightweight refs, so even after pinning to v1.17.0 you may see
+# `release-1.8.0-3544-g<sha>` — read this as "3544 commits past the nearest
+# annotated tag, at commit <sha>". The SHA is what matters. For an honest
+# answer, run:
+#     git -C ext/google/googletest describe --tags
+#     # -> v1.17.0
 
 # Re-check the build with the new submodule
 > mkdir build-verify && cd build-verify
